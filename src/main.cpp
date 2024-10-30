@@ -7,7 +7,7 @@ This is currently based off of a Raylib example file
 #include "view/TileRenderer.h"
 
 //CONSTANTS
-#define TITLE "NPC Ahh"
+#define TITLE "Human Cattle - The World's Most Misanthropic Video Game!"
 #define RESOURCES_FOLDER "resources"
 //
 
@@ -16,7 +16,7 @@ Texture chuddie;
 
 int screenWidth = 1280;
 int screenHeight = 720;
-bool drawFPS = true;
+bool drawFPS = false;
 
 int offsetX = 0;
 int offsetY = 0;
@@ -90,7 +90,7 @@ void GameLoop() {
 	// draw our textures to the screen
 	DrawTiles(screenHeight,screenWidth,offsetX,offsetY);
 	DrawTexture(chuddie, screenWidth/2-16, screenHeight/2-16, WHITE);//Magic numbers galore
-	FPS();	
+	FPS();
 
 
 	// end the frame and get ready for the next one  (display frame, poll input, etc...)

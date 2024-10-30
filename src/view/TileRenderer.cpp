@@ -1,23 +1,22 @@
 #include "raylib.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
-#include "model/Perlin.h"
-#include <time.h>
+#include "model/World.h"
 
 #define TILE_SIZE 32
 
 Texture grass;
 Texture water;
-Perlin* heightMap;
+World* world;
 
 void initializeTiles() {
 	grass = LoadTexture("grass.png");
 	water = LoadTexture("water.png");
-	heightMap = new Perlin(time(0));
+	world = new World(1000, 1000);
 }
 void clearTiles() {
 	UnloadTexture(grass);
 	UnloadTexture(water);
-	delete heightMap;
+	delete world;
 }
 void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY) {
 	int tileHeight = screenHeight % TILE_SIZE == 0 ? screenHeight / TILE_SIZE : screenWidth / TILE_SIZE + 1;
@@ -34,13 +33,13 @@ void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY) {
 			int si = i - offsetY;
 			int sj = j - offsetX;
 
-			if (heightMap->sample(si*0.1, sj*0.1) > 0) DrawTexture(grass, x, y, WHITE);
+			if (world->getTile(si,sj)->isLand()) DrawTexture(grass, x, y, WHITE);
 			else DrawTexture(water, x, y, WHITE);
 		}
 	}
 	
 }
 void resetTiles() {
-	delete heightMap;
-	heightMap = new Perlin(time(0));
+	delete world;
+	world = new World(1000,1000);
 }

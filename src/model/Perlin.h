@@ -1,6 +1,5 @@
 #ifndef NOISE_H
 #define NOISE_H
-#endif
 
 class Perlin {
 public:
@@ -11,4 +10,5 @@ private:
 	int* shuffle;
 };
 
+#endif
 #pragma once

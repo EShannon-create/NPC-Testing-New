@@ -60,5 +60,6 @@ float grad(int hash, float x, float y) {
 	case 5: return y;
 	case 6: return -x;
 	case 7: return -y;
+	default: return 0;
 	}
 }
