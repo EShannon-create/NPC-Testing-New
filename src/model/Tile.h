@@ -8,7 +8,10 @@ public:
 	bool isLand();
 	bool isWater();
 	float getWildGrowth();
-	void updateGrowth(Tile*, Tile*, Tile*, Tile*);
+	void updateGrowth(Tile*, Tile*, Tile*, Tile*, int);
+	int fertilityGrade();
+	int growthGrade();
+	void setWildGrowth(float);
 private:
 	float height;
 	float fertility;
