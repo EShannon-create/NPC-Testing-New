@@ -29,24 +29,32 @@ bool drawFPS = false;
 World* world;
 Person* player;
 Person** people;
-int population;
+int population = 16;
 //
 
 //METHODS
 void GameLoop();
 void FPS();
+void SaveMapImage();
 //
 
+void initializePeople() {
+	people = new Person * [population];
+	people[0] = player;
+	for (int i = 1; i < population; i++) {
+		people[i] = nullptr;
+	}
+}
 void initialize() {
 	SetTargetFPS(60);
 	world = new World(WORLD_SIZE,WORLD_SIZE);
 	player = new Person();
-	population = 2;
-	people = new Person * [population];
-	people[0] = player;
+	initializePeople();
 	people[1] = new Person(1, 1);
+
 	InitializeTextures();
 }
+
 void clear() {
 	delete world;
 	delete player;
@@ -103,6 +111,7 @@ void GameLoop() {
 
 	if (IsKeyPressed(KEY_R)) resetTiles();//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
 	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
+	if (IsKeyPressed(KEY_I)) SaveMapImage();
 
 	// draw our textures to the screen
 	DrawTiles(screenHeight,screenWidth,-player->getX(), -player->getY(), world);
@@ -118,4 +127,20 @@ void GameLoop() {
 
 	//This should be moved to a central MODEL UPDATER
 	world->updateTiles(TILE_UPDATES_PER_TICK);
+}
+void SaveMapImage() {
+	Image image = GenImageColor(WORLD_SIZE, WORLD_SIZE, BLANK);
+	for (int y = 0; y < WORLD_SIZE; y++) {
+		for (int x = 0; x < WORLD_SIZE; x++) {
+			Tile* tile = world->getTile(x,y);
+			int fg = tile->fertilityGrade();
+			Color color = tile->isWater() ? BLUE :
+				fg == 0 ? YELLOW :
+				fg == 1 ? BROWN :
+				fg == 2 ? DARKGREEN : GREEN;
+			ImageDrawPixel(&image, x, y, color);
+		}
+	}
+	ExportImage(image, "surely this name will help find it.png");
+	UnloadImage(image);
 }
