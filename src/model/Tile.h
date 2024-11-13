@@ -12,6 +12,7 @@ public:
 	int fertilityGrade();
 	int growthGrade();
 	void setWildGrowth(float);
+	char* getInfo();
 private:
 	float height;
 	float fertility;

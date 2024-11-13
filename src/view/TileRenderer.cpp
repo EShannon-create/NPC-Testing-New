@@ -8,6 +8,10 @@ Texture2D* growth;
 Texture water;
 Texture chuddie;
 
+int modw(int);
+int modh(int);
+bool in(int, int, int);
+
 void InitializeTextures() {
 	land = new Texture2D [FERTILITY_GRADES];
 	for (int i = 0; i < FERTILITY_GRADES; i++) {
@@ -52,18 +56,21 @@ void DrawEntities(int screenHeight, int screenWidth, int offsetX, int offsetY, P
 		Person* person = people[i];
 		if (person == nullptr) continue;
 
-		int x = person->getX();
-		int y = person->getY();
+		int ww = getWorldWidth();
+		int wh = getWorldHeight();
 
-		int min_x = -offsetX - tileWidth / 2 + 1;
-		int min_y = -offsetY - tileHeight / 2 + 1;
+		int x = modw(person->getX());
+		int y = modh(person->getY());
 
-		int max_x = tileWidth / 2 + 1 - offsetX;
-		int max_y = tileHeight / 2 + 1 - offsetY;
+		int min_x = modw(- offsetX - tileWidth / 2 + 1);
+		int min_y = modh(- offsetY - tileHeight / 2 + 1);
 
-		if (x >= min_x && x < max_x && y >= min_y && y < max_y) {
-			int draw_x = x+offsetX+ tileWidth / 2 - 1;
-			int draw_y = y+offsetY+tileHeight/2-1;
+		int max_x = modw(tileWidth / 2 + 1 - offsetX);
+		int max_y = modh(tileHeight / 2 + 1 - offsetY);
+
+		if (in(min_x,max_x,x) && in(min_y,max_y,y)) {
+			int draw_x = modw(x+offsetX+ tileWidth / 2 - 1);
+			int draw_y = modh(y+offsetY+tileHeight/2-1);
 			DrawTexture(chuddie, draw_x*TILE_SIZE, draw_y * TILE_SIZE, WHITE);
 		}
 	}
@@ -97,4 +104,16 @@ void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, Worl
 		}
 	}
 	
+}
+int modw(int x) {
+	int mod = x % getWorldWidth();
+	return mod < 0 ? mod + getWorldWidth() : mod;
+}
+int modh(int y) {
+	int mod = y % getWorldHeight();
+	return mod < 0 ? mod + getWorldHeight() : mod;
+}
+bool in(int min, int max, int val) {
+	if (min <= max) return val >= min && val <= max;
+	else return val >= min || val <= max;
 }

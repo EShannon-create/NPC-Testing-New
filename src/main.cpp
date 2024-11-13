@@ -17,12 +17,13 @@ This is currently based off of a Raylib example file
 #define WORLD_SIZE 1000
 #define TILE_SIZE 32
 #define TILE_UPDATES_PER_TICK 100000//On my computer, it takes about a quarter million to start struggling to keep 60 FPS, should be a setting
-//
+//									  Don't worry btw there's logic compensating for less tile updates per tick, lowering this makes things like wild growth happen faster per update
 
 //VARIABLES
 int screenWidth = 1280;
 int screenHeight = 720;
 bool drawFPS = false;
+double runtime = 0.0;
 //
 
 //DATA
@@ -48,6 +49,7 @@ void initializePeople() {
 void initialize() {
 	SetTargetFPS(60);
 	world = new World(WORLD_SIZE,WORLD_SIZE);
+	setWorldDimensions(WORLD_SIZE, WORLD_SIZE);
 	player = new Person();
 	initializePeople();
 	people[1] = new Person(1, 1);
@@ -112,6 +114,7 @@ void GameLoop() {
 	if (IsKeyPressed(KEY_R)) resetTiles();//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
 	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
 	if (IsKeyPressed(KEY_I)) SaveMapImage();
+	if (IsKeyPressed(KEY_G)) printf("(%d,%d)\n",player->getX(),player->getY());
 
 	// draw our textures to the screen
 	DrawTiles(screenHeight,screenWidth,-player->getX(), -player->getY(), world);
@@ -141,6 +144,6 @@ void SaveMapImage() {
 			ImageDrawPixel(&image, x, y, color);
 		}
 	}
-	ExportImage(image, "surely this name will help find it.png");
+	ExportImage(image, "renders/world.png");
 	UnloadImage(image);
 }

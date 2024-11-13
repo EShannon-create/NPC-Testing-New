@@ -1,3 +1,11 @@
 To do:
-1. World wraps around, but player location does not necessarily reflect that. Update in Player.cpp & TileRenderer.cpp!
-2. Handling multiple chuddies is jank as fuck
+-Handling multiple chuddies is jank as fuck
+
+Actions:
+-Forage wild growth
+-Build structure
+	-Farm
+	-House
+
+Known Bugs:
+-Chuddies do not render when (world size * 32 < screen size) (32 is pixels per tile, e.g. world wrapping is smaller than the screen)

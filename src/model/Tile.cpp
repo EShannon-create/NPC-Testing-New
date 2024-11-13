@@ -1,7 +1,8 @@
 #include "Tile.h"
+#include <string>
 
 #define LAND_THRESHOLD 0
-#define WILD_GROWTH_SPEED 124.0
+#define WILD_GROWTH_SPEED 0.0005
 #define FERTILITY_GRADES 4
 
 Tile::Tile(float height, float fertility) : height(height), fertility(fertility/2+0.5f) {
@@ -20,14 +21,14 @@ float Tile::getWildGrowth() {
 	return wildGrowth;
 }
 void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, int speedModifier) {//Speed modifier is passed in as count, so if more tiles are updated per tick it does not effect how fast a tile's wild growth regenerates
-	//This WILL NOT WORK right now.
-
 	if (wildGrowth == fertility) return;
 
-	wildGrowth += north->getWildGrowth() * WILD_GROWTH_SPEED / speedModifier;
-	wildGrowth += south->getWildGrowth() * WILD_GROWTH_SPEED / speedModifier;
-	wildGrowth += east->getWildGrowth() * WILD_GROWTH_SPEED / speedModifier;
-	wildGrowth += west->getWildGrowth() * WILD_GROWTH_SPEED / speedModifier;
+	//printf("Speed Modfifier: %d, %f\nWild Growth: %f\n", speedModifier, WILD_GROWTH_SPEED * speedModifier, wildGrowth);
+
+	wildGrowth += north->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
+	wildGrowth += south->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
+	wildGrowth += east->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
+	wildGrowth += west->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
 	
 	if (wildGrowth > fertility) wildGrowth = fertility;
 
@@ -49,4 +50,10 @@ int Tile::growthGrade() {
 }
 void Tile::setWildGrowth(float value) {
 	wildGrowth = value;
+}
+char* Tile::getInfo() {
+	std::string s = "Wild Growth: " + std::to_string(wildGrowth) + "\nFertility: " + std::to_string(fertility) + "\n";
+	char* str = new char[s.length() + 1];
+	std::strcpy(str, s.c_str());
+	return str;
 }

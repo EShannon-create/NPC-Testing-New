@@ -1,5 +1,11 @@
-#ifndef CHUDDIE_PERSON_H
-#define CHUDDIE_PERSON_H
+#ifndef PERSON_H
+#define PERSON_H
+
+#include "World.h"
+
+void setWorldDimensions(int,int);
+int getWorldHeight();
+int getWorldWidth();
 
 class Person {
 public:
@@ -12,6 +18,8 @@ public:
 	void moveRight();
 	int getX();
 	int getY();
+	
+	void forage(World*);
 private:
 	int x;
 	int y;

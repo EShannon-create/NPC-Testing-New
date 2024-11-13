@@ -38,15 +38,21 @@ Tile* World::getTile(int x, int y) {//This causes a donut world
 	return map[i];
 }
 void World::updateTiles(int count) {
-	if (count > width * height) count = width * height;
-	for (int i = updateIndex; i < updateIndex+count; i++) {
-		Tile* tile = map[i];
+	int c = count > width * height ? width * height : count;
+
+	for (int i = updateIndex; i < updateIndex+c; i++) {
+		Tile* tile = map[mod(i,width*height)];
 		int x = i % width;
 		int y = i / width;
 		Tile* north = getTile(x, y + 1);
 		Tile* south = getTile(x, y - 1);
 		Tile* east = getTile(x + 1, y);
 		Tile* west = getTile(x - 1, y);
-		tile->updateGrowth(north, south, east, west, count);
+
+		float speedModifier = (float)(width * height) / c;
+
+		tile->updateGrowth(north, south, east, west, speedModifier);
 	}
+	updateIndex += c;
+	if (updateIndex > width * height) updateIndex -= width * height;
 }

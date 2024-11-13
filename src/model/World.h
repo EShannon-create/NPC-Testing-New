@@ -3,7 +3,6 @@
 
 #include "Tile.h"
 #include "Perlin.h"
-#include "Person.h"
 
 class World {
 public:
