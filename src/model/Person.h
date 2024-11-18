@@ -12,17 +12,24 @@ public:
 	Person();
 	Person(int, int);
 	~Person();
-	void moveUp();
-	void moveDown();
-	void moveLeft();
-	void moveRight();
+	void move(int, int, bool);
 	int getX();
 	int getY();
-	
 	void forage(World*);
+	bool build(World*, char);
+	bool isActing();
+	void update(float);
+	char* getWaitText();
+	float getWaitTime();
 private:
 	int x;
 	int y;
+
+	float actionTimer;
+	void wait(char*,float);
+	char* waitText;
+
+	Tile* getOn(World*);
 };
 
 #endif

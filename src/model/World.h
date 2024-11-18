@@ -2,19 +2,26 @@
 #define WORLD_H
 
 #include "Tile.h"
-#include "Perlin.h"
+#include "Octave.h"
 
 class World {
 public:
 	World(int,int);
 	~World();
 	Tile* getTile(int, int);
-	void updateTiles(int);
+	void updateTiles(int,float);
+	void updateClock(float);
+	char* getTime();
 private:
 	Tile** map;
 	int width;
 	int height;
 	int updateIndex;
+	double currentTime;
+	int date;
+	int month;
+	int year;
+	float calculateDropOff(float, float);
 };
 
 #endif

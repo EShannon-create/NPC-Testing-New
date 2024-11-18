@@ -1,12 +1,16 @@
 #include "TileRenderer.h"
+#include <stdio.h>
 
 #define TILE_SIZE 32
 #define FERTILITY_GRADES 4
+#define BUILDING_TEXTURES 3
 
 Texture2D* land;
 Texture2D* growth;
+Texture2D* buildingTextures;
 Texture water;
 Texture chuddie;
+Texture hourglass;
 
 int modw(int);
 int modh(int);
@@ -31,14 +35,23 @@ void InitializeTextures() {
 
 	water = LoadTexture("water.png");
 	chuddie = LoadTexture("chuddie.png");
+	hourglass = LoadTexture("hourglass.png");
+
+	buildingTextures = new Texture2D[BUILDING_TEXTURES];
+	buildingTextures[0] = LoadTexture("construction.png");
+	buildingTextures[1] = LoadTexture("house.png");
+	buildingTextures[2] = LoadTexture("farm.png");
 }
 void UninitializeTextures() {
 	for (int i = 0; i < FERTILITY_GRADES; i++) UnloadTexture(land[i]);
 	for (int i = 0; i < FERTILITY_GRADES-1; i++) UnloadTexture(growth[i]);
+	for (int i = 0; i < BUILDING_TEXTURES; i++) UnloadTexture(buildingTextures[i]);
 	UnloadTexture(water);
 	UnloadTexture(chuddie);
+	UnloadTexture(hourglass);
 	delete[] land;
 	delete[] growth;
+	delete[] buildingTextures;
 }
 
 int getTileHeight(int screenHeight) {
@@ -72,6 +85,12 @@ void DrawEntities(int screenHeight, int screenWidth, int offsetX, int offsetY, P
 			int draw_x = modw(x+offsetX+ tileWidth / 2 - 1);
 			int draw_y = modh(y+offsetY+tileHeight/2-1);
 			DrawTexture(chuddie, draw_x*TILE_SIZE, draw_y * TILE_SIZE, WHITE);
+			if (person->isActing()) {
+				char* text = person->getWaitText();
+				DrawText(text, draw_x * TILE_SIZE + TILE_SIZE, draw_y * TILE_SIZE,TILE_SIZE/2,WHITE);
+				//printf("%f\n",person->getWaitTime());
+				delete text;
+			}
 		}
 	}
 }
@@ -99,6 +118,11 @@ void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, Worl
 				int growthGrade = tile->growthGrade();
 				//printf("Wild Growth: %f, Grade: %d\n",tile->getWildGrowth(),growthGrade);
 				if (growthGrade > 0) DrawTexture(growth[growthGrade - 1], x, y, WHITE);
+
+				int buildingTexture = tile->getBuildingTextureIndex();
+				if (buildingTexture == -1) continue;
+
+				DrawTexture(buildingTextures[buildingTexture], x, y, WHITE);
 			}
 
 		}

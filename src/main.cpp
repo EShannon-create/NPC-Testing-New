@@ -14,7 +14,7 @@ This is currently based off of a Raylib example file
 //CONSTANTS
 #define TITLE "Human Cattle II - Chud Wars"
 #define RESOURCES_FOLDER "resources"
-#define WORLD_SIZE 1000
+#define WORLD_SIZE 4400
 #define TILE_SIZE 32
 #define TILE_UPDATES_PER_TICK 100000//On my computer, it takes about a quarter million to start struggling to keep 60 FPS, should be a setting
 //									  Don't worry btw there's logic compensating for less tile updates per tick, lowering this makes things like wild growth happen faster per update
@@ -30,29 +30,47 @@ double runtime = 0.0;
 World* world;
 Person* player;
 Person** people;
-int population = 16;
+int peopleArraySize = 16;
+int population;
 //
 
 //METHODS
 void GameLoop();
 void FPS();
 void SaveMapImage();
+void CheckScreenSize();
+void DrawClock();
 //
 
 void initializePeople() {
-	people = new Person * [population];
+	people = new Person * [peopleArraySize];
 	people[0] = player;
-	for (int i = 1; i < population; i++) {
+	population = 1;
+	for (int i = 1; i < peopleArraySize; i++) {
 		people[i] = nullptr;
 	}
 }
+void resizePeopleArray() {
+	peopleArraySize *= 2;
+	Person** newPeople = new Person*[peopleArraySize];
+	for (int i = 0; i < population; i++) {
+		newPeople[i] = people[i];
+	}
+	delete[] people;
+	people = newPeople;
+}
+void registerPerson(Person* person) {
+	if (population >= peopleArraySize) resizePeopleArray();
+	people[population] = person;
+	population++;
+}
 void initialize() {
 	SetTargetFPS(60);
-	world = new World(WORLD_SIZE,WORLD_SIZE);
-	setWorldDimensions(WORLD_SIZE, WORLD_SIZE);
-	player = new Person();
+	world = new World(WORLD_SIZE*2,WORLD_SIZE);
+	setWorldDimensions(WORLD_SIZE*2, WORLD_SIZE);
+	player = new Person(screenWidth/2,screenHeight/2);
 	initializePeople();
-	people[1] = new Person(1, 1);
+	registerPerson(new Person(screenWidth / 2+1, screenHeight / 2));
 
 	InitializeTextures();
 }
@@ -98,11 +116,15 @@ void FPS() {
 	DrawRectangle(70, 70, 92, 34, DARKGRAY);
 	DrawFPS(80, 80);
 }
-void resetTiles() {
+static void resetTiles() {
 	delete world;
 	world = new World(WORLD_SIZE, WORLD_SIZE);
 }
 void GameLoop() {
+	const float delta_t = GetFrameTime();
+	//printf("Delta T: %f\n", delta_t);
+
+	CheckScreenSize();
 	// drawing
 	BeginDrawing();
 
@@ -115,10 +137,16 @@ void GameLoop() {
 	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
 	if (IsKeyPressed(KEY_I)) SaveMapImage();
 	if (IsKeyPressed(KEY_G)) printf("(%d,%d)\n",player->getX(),player->getY());
+	if (IsKeyPressed(KEY_F11)) {
+		ToggleBorderlessWindowed();
+		screenWidth = GetScreenWidth();
+		screenHeight = GetScreenHeight();
+	}
 
 	// draw our textures to the screen
 	DrawTiles(screenHeight,screenWidth,-player->getX(), -player->getY(), world);
-	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, population);
+	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, peopleArraySize);
+	DrawClock();
 	FPS();
 
 
@@ -129,7 +157,16 @@ void GameLoop() {
 
 
 	//This should be moved to a central MODEL UPDATER
-	world->updateTiles(TILE_UPDATES_PER_TICK);
+	world->updateTiles(TILE_UPDATES_PER_TICK, delta_t);
+	world->updateClock(delta_t);
+	
+	for (int i = 0; i < population; i++) if (people[i] != nullptr) people[i]->update(delta_t);
+}
+void DrawClock() {
+	char* timetxt = world->getTime();
+	DrawText(timetxt, screenWidth/100, screenWidth/100, 16, WHITE);
+	//printf(timetxt);
+	delete timetxt;
 }
 void SaveMapImage() {
 	Image image = GenImageColor(WORLD_SIZE, WORLD_SIZE, BLANK);
@@ -146,4 +183,8 @@ void SaveMapImage() {
 	}
 	ExportImage(image, "renders/world.png");
 	UnloadImage(image);
+}
+void CheckScreenSize() {
+	screenWidth = GetScreenWidth();
+	screenHeight = GetScreenHeight();
 }

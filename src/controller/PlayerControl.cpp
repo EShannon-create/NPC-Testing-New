@@ -17,12 +17,16 @@ bool keydown = false;
 
 void HandleInputs(World* world, Person* player) {
 
-	if (IsKeyDown(RUN) || !keydown) {
-		if (IsKeyDown(WALK_UP)) player->moveUp();
-		if (IsKeyDown(WALK_DOWN)) player->moveDown();
-		if (IsKeyDown(WALK_LEFT)) player->moveLeft();
-		if (IsKeyDown(WALK_RIGHT)) player->moveRight();
+	bool running = IsKeyDown(RUN);
+	if (running || !keydown) {
+		int x = 0;
+		int y = 0;
+		if (IsKeyDown(WALK_UP)) y--;
+		if (IsKeyDown(WALK_DOWN)) y++;
+		if (IsKeyDown(WALK_LEFT)) x--;
+		if (IsKeyDown(WALK_RIGHT)) x++;
 		keydown = IsKeyDown(WALK_UP) || IsKeyDown(WALK_DOWN) || IsKeyDown(WALK_LEFT) || IsKeyDown(WALK_RIGHT);
+		if(keydown) player->move(x, y, running);
 	}
 	else if (IsKeyUp(WALK_UP) && IsKeyUp(WALK_DOWN) && IsKeyUp(WALK_LEFT) && IsKeyUp(WALK_RIGHT)) keydown = false;
 
@@ -32,4 +36,6 @@ void HandleInputs(World* world, Person* player) {
 		printf(str);
 		delete str;
 	}
+	if (IsKeyPressed(CONSTRUCT_BUILDING)) player->build(world, 'H');
+	if (IsKeyPressed(KEY_F)) player->build(world, 'F');
 }
