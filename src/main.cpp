@@ -4,17 +4,23 @@ This is currently based off of a Raylib example file
 
 #include "raylib.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
+
 #include "view/TileRenderer.h"
+#include "view/GUIRenderer.h"
+#include "view/EntityRenderer.h"
+
 #include "controller/PlayerControl.h"
+
 #include "model/World.h"
 #include "model/Person.h"
-#include "view/EntityRenderer.h"
+
 #include <stdio.h>
 
 //CONSTANTS
 #define TITLE "Human Cattle II - Chud Wars"
 #define RESOURCES_FOLDER "resources"
-#define WORLD_SIZE 4400
+#define WORLD_SIZE 1000 //4400 is an accurate earth-size
+#define WORLD_ASPECT_RATIO 2 //Should be 2
 #define TILE_SIZE 32
 #define TILE_UPDATES_PER_TICK 100000//On my computer, it takes about a quarter million to start struggling to keep 60 FPS, should be a setting
 //									  Don't worry btw there's logic compensating for less tile updates per tick, lowering this makes things like wild growth happen faster per update
@@ -66,8 +72,8 @@ void registerPerson(Person* person) {
 }
 void initialize() {
 	SetTargetFPS(60);
-	world = new World(WORLD_SIZE*2,WORLD_SIZE);
-	setWorldDimensions(WORLD_SIZE*2, WORLD_SIZE);
+	world = new World(WORLD_SIZE*WORLD_ASPECT_RATIO,WORLD_SIZE);
+	setWorldDimensions(WORLD_SIZE*WORLD_ASPECT_RATIO, WORLD_SIZE);
 	player = new Person(screenWidth/2,screenHeight/2);
 	initializePeople();
 	registerPerson(new Person(screenWidth / 2+1, screenHeight / 2));
@@ -118,7 +124,7 @@ void FPS() {
 }
 static void resetTiles() {
 	delete world;
-	world = new World(WORLD_SIZE, WORLD_SIZE);
+	world = new World(WORLD_SIZE*WORLD_ASPECT_RATIO, WORLD_SIZE);
 }
 void GameLoop() {
 	const float delta_t = GetFrameTime();
@@ -146,6 +152,7 @@ void GameLoop() {
 	// draw our textures to the screen
 	DrawTiles(screenHeight,screenWidth,-player->getX(), -player->getY(), world);
 	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, peopleArraySize);
+	DrawGUI(player);
 	DrawClock();
 	FPS();
 
@@ -169,9 +176,9 @@ void DrawClock() {
 	delete timetxt;
 }
 void SaveMapImage() {
-	Image image = GenImageColor(WORLD_SIZE, WORLD_SIZE, BLANK);
+	Image image = GenImageColor(WORLD_SIZE*WORLD_ASPECT_RATIO, WORLD_SIZE, BLANK);
 	for (int y = 0; y < WORLD_SIZE; y++) {
-		for (int x = 0; x < WORLD_SIZE; x++) {
+		for (int x = 0; x < WORLD_SIZE*WORLD_ASPECT_RATIO; x++) {
 			Tile* tile = world->getTile(x,y);
 			int fg = tile->fertilityGrade();
 			Color color = tile->isWater() ? BLUE :
@@ -180,6 +187,12 @@ void SaveMapImage() {
 				fg == 2 ? DARKGREEN : GREEN;
 			ImageDrawPixel(&image, x, y, color);
 		}
+	}
+	for (int i = 0; i < population; i++) {
+		Person* person = people[i];
+		int x = person->getX();
+		int y = person->getY();
+		ImageDrawPixel(&image, x, y, RED);
 	}
 	ExportImage(image, "renders/world.png");
 	UnloadImage(image);

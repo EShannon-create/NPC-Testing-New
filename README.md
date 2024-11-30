@@ -1,5 +1,7 @@
 To do:
 -Create a chuddie handler object
+-Chuddies must swim over water
+-Health, Hunger, Stamina
 
 Actions:
 -Forage wild growth

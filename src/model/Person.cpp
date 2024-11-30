@@ -6,8 +6,9 @@
 int worldWidth = 0;
 int worldHeight = 0;
 
-#define BUILDING_AMOUNT_PER_HOUR 0.05 //This is very low I know, but it should take a lot of chuddies a lot of time to build a building
-#define HOUR_LENGTH 60.0
+#define BUILDING_AMOUNT_PER_TIME 0.05 //This is very low I know, but it should take a lot of chuddies a lot of time to build a building
+#define BUILDING_TIME 60.0
+#define FORAGING_TIME 15.0
 #define WALKING_TIME 0.75 //Assume a tile is an acre (square)
                           //Therefore a tile is ~208 ft (linear)
                           //Average walking speed is 4.7 ft/s
@@ -18,14 +19,17 @@ int worldHeight = 0;
 #define SQRT2 1.41421356237309504880 //Relevant
 
 Person::Person() : Person(0,0) {
-
 }
 Person::Person(int x, int y) : x(x), y(y) {
 	actionTimer = 0.0f;
 	waitText = nullptr;
+	inventory = new Inventory();
 }
 Person::~Person() {
-
+	delete inventory;
+}
+Inventory* Person::getInventory() {
+	return inventory;
 }
 void Person::move(int x, int y, bool running) {
 	if (isActing()) return;
@@ -56,7 +60,7 @@ Tile* Person::getOn(World* world) {
 }
 void Person::forage(World* world) {
 	if (isActing()) return;
-	this->wait(".... Foraging\0",HOUR_LENGTH);
+	this->wait(".... Foraging\0",FORAGING_TIME);
 	getOn(world)->setWildGrowth(0);
 }
 void setWorldDimensions(int width, int height) {
@@ -71,8 +75,8 @@ int getWorldWidth() {
 }
 bool Person::build(World* world, char buildingID) {
 	if (isActing()) return false;
-	this->wait(".... Building\0",HOUR_LENGTH);
-	return getOn(world)->build(buildingID, BUILDING_AMOUNT_PER_HOUR);
+	this->wait(".... Building\0",BUILDING_TIME);
+	return getOn(world)->build(buildingID, BUILDING_AMOUNT_PER_TIME);
 }
 bool Person::isActing() {
 	return actionTimer > 0.0f;

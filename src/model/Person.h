@@ -2,6 +2,7 @@
 #define PERSON_H
 
 #include "World.h"
+#include "model/items/containers/Inventory.h"
 
 void setWorldDimensions(int,int);
 int getWorldHeight();
@@ -21,6 +22,7 @@ public:
 	void update(float);
 	char* getWaitText();
 	float getWaitTime();
+	Inventory* getInventory();
 private:
 	int x;
 	int y;
@@ -30,6 +32,8 @@ private:
 	char* waitText;
 
 	Tile* getOn(World*);
+
+	Inventory* inventory;
 };
 
 #endif
