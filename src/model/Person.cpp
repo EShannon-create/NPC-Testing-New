@@ -60,8 +60,8 @@ Tile* Person::getOn(World* world) {
 }
 void Person::forage(World* world) {
 	if (isActing()) return;
-	this->wait(".... Foraging\0",FORAGING_TIME);
-	getOn(world)->setWildGrowth(0);
+	if(getOn(world)->harvestWildGrowth(inventory))
+		this->wait(".... Foraging\0", FORAGING_TIME);
 }
 void setWorldDimensions(int width, int height) {
 	worldHeight = height;
@@ -115,4 +115,7 @@ char* Person::getWaitText() {
 }
 float Person::getWaitTime() {
 	return actionTimer;
+}
+void Person::organizeInventory() {
+	inventory->collapse();
 }

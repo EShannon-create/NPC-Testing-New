@@ -23,6 +23,7 @@ public:
 	char* getWaitText();
 	float getWaitTime();
 	Inventory* getInventory();
+	void organizeInventory();
 private:
 	int x;
 	int y;

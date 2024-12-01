@@ -3,10 +3,15 @@
 
 #include "ItemContainer.h"
 
-class Inventory : ItemContainer {
+class Inventory : public ItemContainer {
 public:
-	Inventory::Inventory();
+	Inventory();
+	void up();
+	void down();
+	ItemStack* getSelected();
+	int getSelectionIndex();
 private:
+	int selectionIndex;
 };
 
 #endif

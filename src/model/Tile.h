@@ -4,6 +4,8 @@
 #include "buildings/Building.h"
 #include "buildings/Farm.h"
 #include "buildings/House.h"
+#include "items/containers/ItemContainer.h"
+#include "items/ItemStack.h"
 
 class Tile {
 public:
@@ -15,12 +17,13 @@ public:
 	void updateGrowth(Tile*, Tile*, Tile*, Tile*, float);
 	int fertilityGrade();
 	int growthGrade();
-	void setWildGrowth(float);
 	char* getInfo();
 
 	bool build(char, float);
 	void destroy();
 	int getBuildingTextureIndex();
+
+	bool harvestWildGrowth(ItemContainer*);
 private:
 	float height;
 	float fertility;

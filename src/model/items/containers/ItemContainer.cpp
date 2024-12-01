@@ -40,3 +40,15 @@ bool ItemContainer::move(ItemContainer* from, int index, ItemContainer* to) {
 	from->addAtIndex(item, index);//should always work and return true unless something's gone horribly wrong :)
 	return false;
 }
+void ItemContainer::collapse() {//Probably needs testing
+	for (int i = 0; i < size; i++) {
+		ItemStack* to = items[i];
+		for (int j = i + 1; j < size; j++) {
+			ItemStack* from = items[j];
+			if (ItemStack::combine(to, from)) items[j] = nullptr;
+		}
+	}
+}
+int ItemContainer::getSize() {
+	return size;
+}

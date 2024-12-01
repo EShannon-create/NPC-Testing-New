@@ -12,6 +12,8 @@ public:
 	bool addAtIndex(ItemStack*, int);
 	bool add(ItemStack*);
 	static bool move(ItemContainer*, int, ItemContainer*);
+	void collapse();
+	int getSize();
 private:
 	ItemStack** items;
 	const int size;
