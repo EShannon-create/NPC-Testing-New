@@ -141,7 +141,7 @@ void GameLoop() {
 
 	if (IsKeyPressed(KEY_R)) resetTiles();//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
 	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
-	if (IsKeyPressed(KEY_I)) SaveMapImage();
+	if (IsKeyPressed(KEY_PRINT_SCREEN)) SaveMapImage();
 	if (IsKeyPressed(KEY_G)) printf("(%d,%d)\n",player->getX(),player->getY());
 	if (IsKeyPressed(KEY_F11)) {
 		ToggleBorderlessWindowed();

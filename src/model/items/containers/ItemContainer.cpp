@@ -41,6 +41,9 @@ bool ItemContainer::move(ItemContainer* from, int index, ItemContainer* to) {
 	return false;
 }
 void ItemContainer::collapse() {//Probably needs testing
+
+	//
+
 	for (int i = 0; i < size; i++) {
 		ItemStack* to = items[i];
 		for (int j = i + 1; j < size; j++) {
@@ -48,6 +51,8 @@ void ItemContainer::collapse() {//Probably needs testing
 			if (ItemStack::combine(to, from)) items[j] = nullptr;
 		}
 	}
+
+	//
 }
 int ItemContainer::getSize() {
 	return size;

@@ -19,7 +19,7 @@ public:
 private:
 	int quantity;
 	ItemID id;
-	static char* getItemName(ItemID);
+	const static char* getItemName(ItemID);
 };
 
 #endif

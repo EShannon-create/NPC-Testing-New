@@ -13,7 +13,7 @@ bool keydown = false;
 #define HARVEST_WILD_GROWTH KEY_E
 #define STUDY_TILE KEY_Q
 #define CONSTRUCT_BUILDING KEY_B
-#define OPEN_INVENTORY KEY_I
+#define ORGANIZE_INVENTORY KEY_I
 #define INVENTORY_UP KEY_UP
 #define INVENTORY_DOWN KEY_DOWN
 
@@ -42,4 +42,5 @@ void HandleInputs(World* world, Person* player) {
 	if (IsKeyPressed(KEY_F)) player->build(world, 'F');
 	if (IsKeyPressed(INVENTORY_UP)) player->getInventory()->up();
 	if (IsKeyPressed(INVENTORY_DOWN)) player->getInventory()->down();
+	if (IsKeyPressed(ORGANIZE_INVENTORY)) player->organizeInventory();
 }

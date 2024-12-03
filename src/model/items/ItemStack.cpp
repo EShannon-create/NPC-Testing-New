@@ -14,6 +14,7 @@ int ItemStack::getQuantity() {
 	return quantity;
 }
 bool ItemStack::sameItem(ItemStack* a, ItemStack* b) {
+	if (a == nullptr || b == nullptr) return false;
 	return a->id == b->id;
 }
 bool ItemStack::combine(ItemStack* a, ItemStack* b) {
@@ -28,7 +29,7 @@ bool ItemStack::combine(ItemStack* a, ItemStack* b) {
 	return true;
 }
 char* ItemStack::getName() {
-	char* n = getItemName(id);
+	const char* n = getItemName(id);
 	int j = 0;
 	while (n[j] != '\0') j++;
 	j++;
@@ -36,16 +37,17 @@ char* ItemStack::getName() {
 	char* name = new char[j];
 	for (int k = 0; k < j; k++) name[k] = n[k];
 
+	if (j <= 3) return name;
+
 	char a = getQuantity() / 10 + 48;
 	char b = getQuantity() % 10 + 48;
 
 	name[1] = a;
 	name[2] = b;
 
-	delete n;
 	return name;
 }
-char* ItemStack::getItemName(ItemID id) {
+const char* ItemStack::getItemName(ItemID id) {
 	switch (id) {
 	case MANGO: return " .. Mango\0";
 	case STICK: return " .. Stick\0";

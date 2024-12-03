@@ -97,5 +97,7 @@ bool Tile::harvestWildGrowth(ItemContainer* ic) {
 	if (!ic->add(mango)) return false;
 	if (!ic->add(stick)) return true;
 
+	wildGrowth = 0;
+
 	return true;
 }

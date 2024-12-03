@@ -118,4 +118,5 @@ float Person::getWaitTime() {
 }
 void Person::organizeInventory() {
 	inventory->collapse();
+	waitText = waitText;
 }
