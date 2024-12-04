@@ -51,6 +51,7 @@ World::World(int width, int height) : width(width), height(height){
 	delete heightMap;
 	delete fertilityMap;
 	updateIndex = 0;
+	Tile::InitRandom(time(0));
 }
 World::~World() {
 	delete[] map;

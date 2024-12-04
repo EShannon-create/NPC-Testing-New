@@ -8,8 +8,10 @@
 #define MINIMUM_FERTILITY_FOR_HARVEST 0.25
 #define FERTILITY_PER_HARVEST_ROLL 0.15
 
-#define MINIMUM_MANGOS_PER_ROLL 2
-#define MINIMUM_STICKS_PER_ROLL 4
+#define MINIMUM_MANGOS_PER_ROLL 0
+#define MAXIMUM_MANGOS_PER_ROLL 2
+#define MINIMUM_STICKS_PER_ROLL 1
+#define MAXIMUM_STICKS_PER_ROLL 4
 
 Tile::Tile(float height, float fertility) : height(height), fertility(fertility/2+0.5f) {
 	wildGrowth = fertility / 2 + 0.5f;//Can I reference self.fertility?
@@ -88,11 +90,18 @@ int Tile::getBuildingTextureIndex() {
 	return building->getTextureIndex();
 }
 bool Tile::harvestWildGrowth(ItemContainer* ic) {
-	int rolls = (wildGrowth - MINIMUM_FERTILITY_FOR_HARVEST) / FERTILITY_PER_HARVEST_ROLL + 1;
+	const int rolls = (wildGrowth - MINIMUM_FERTILITY_FOR_HARVEST) / FERTILITY_PER_HARVEST_ROLL + 1;
 	if (rolls < 1) return false;
 
-	ItemStack* mango = new ItemStack(MANGO,rolls*MINIMUM_MANGOS_PER_ROLL);
-	ItemStack* stick = new ItemStack(STICK, rolls * MINIMUM_STICKS_PER_ROLL);
+	int mangos = 0;
+	int sticks = 0;
+	for (int i = 0; i < rolls; i++) {
+		mangos += roll(MINIMUM_MANGOS_PER_ROLL, MAXIMUM_MANGOS_PER_ROLL);
+		sticks += roll(MINIMUM_STICKS_PER_ROLL, MAXIMUM_STICKS_PER_ROLL);
+	}
+
+	ItemStack* mango = ItemStack::create(MANGO,mangos);
+	ItemStack* stick = ItemStack::create(STICK, sticks);
 
 	if (!ic->add(mango)) return false;
 	if (!ic->add(stick)) return true;
@@ -100,4 +109,22 @@ bool Tile::harvestWildGrowth(ItemContainer* ic) {
 	wildGrowth = 0;
 
 	return true;
+}
+bool Tile::harvestCropGrowth(ItemContainer* ic) {
+	Farm* farm = static_cast<Farm*>(building);
+
+	return true;
+}
+bool Tile::harvest(ItemContainer* ic) {
+	if (building != nullptr && building->getID() == 'F') return harvestCropGrowth(ic);
+	else return harvestWildGrowth(ic);
+}
+void Tile::InitRandom(int seed) {
+	srand(seed);
+}
+/*
+Inclusive [min,max]
+*/
+int Tile::roll(int min, int max) {
+	return rand() % (++max - min) + min;
 }

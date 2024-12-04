@@ -6,6 +6,7 @@
 #include "buildings/House.h"
 #include "items/containers/ItemContainer.h"
 #include "items/ItemStack.h"
+#include <random>
 
 class Tile {
 public:
@@ -22,13 +23,18 @@ public:
 	bool build(char, float);
 	void destroy();
 	int getBuildingTextureIndex();
+	bool harvest(ItemContainer*);
 
-	bool harvestWildGrowth(ItemContainer*);
+	static void InitRandom(int);
 private:
 	float height;
 	float fertility;
 	float wildGrowth;
 	Building* building;
+
+	bool harvestWildGrowth(ItemContainer*);
+	bool harvestCropGrowth(ItemContainer*);
+	static int roll(int, int);
 };
 
 #endif

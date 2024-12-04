@@ -60,7 +60,7 @@ Tile* Person::getOn(World* world) {
 }
 void Person::forage(World* world) {
 	if (isActing()) return;
-	if(getOn(world)->harvestWildGrowth(inventory))
+	if(getOn(world)->harvest(inventory))
 		this->wait(".... Foraging\0", FORAGING_TIME);
 }
 void setWorldDimensions(int width, int height) {

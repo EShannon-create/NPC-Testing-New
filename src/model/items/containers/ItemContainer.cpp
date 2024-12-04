@@ -25,6 +25,7 @@ bool ItemContainer::addAtIndex(ItemStack* item, int index) {
 		items[index] = item;
 		return true;
 	}
+	if (ItemStack::combine(items[index], item)) return true;
 	return false;
 }
 bool ItemContainer::add(ItemStack* item) {

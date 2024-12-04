@@ -54,3 +54,8 @@ const char* ItemStack::getItemName(ItemID id) {
 	default: return " .. NONE\0";
 	}
 }
+ItemStack* ItemStack::create(ItemID id, int quantity) {
+	if (quantity <= 0) return nullptr;
+	if (quantity > MAX_QUANTITY) return nullptr;
+	return new ItemStack(id, quantity);
+}
