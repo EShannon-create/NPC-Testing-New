@@ -12,6 +12,8 @@ public:
 	void updateTiles(int,float);
 	void updateClock(float);
 	char* getTime();
+	float getSunAngle();
+	void analyze();
 private:
 	Tile** map;
 	int width;

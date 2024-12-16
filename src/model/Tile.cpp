@@ -1,5 +1,6 @@
 #include "Tile.h"
 #include <string>
+#include <math.h>
 //#include <stdio.h>
 
 #define LAND_THRESHOLD 0
@@ -13,8 +14,15 @@
 #define MINIMUM_STICKS_PER_ROLL 1
 #define MAXIMUM_STICKS_PER_ROLL 4
 
-Tile::Tile(float height, float fertility) : height(height), fertility(fertility/2+0.5f) {
-	wildGrowth = fertility / 2 + 0.5f;//Can I reference self.fertility?
+float fertilityModifier(float input) {
+	float g = input < 0 ? -input : input;
+	float sqrt = std::sqrt(g) * (input < 0 ? -1 : 1);
+	//printf("Input: %f, Not Normalized: %f, Output: %f\n", input,sqrt,sqrt*0.5+0.5);
+	return sqrt * 0.5 + 0.5;
+}
+
+Tile::Tile(float height, float fertility) : height(height), fertility(fertilityModifier(fertility)) {
+	wildGrowth = this->fertility;
 	building = nullptr;
 }
 Tile::~Tile() {

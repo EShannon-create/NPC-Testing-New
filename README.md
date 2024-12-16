@@ -26,10 +26,17 @@ Q - Study Tile
 E - Forage Wild Growth
 B - Build House        --I want to replace this with opening a menu
 F - Build Farm
+/ - Sleep
+Enter - Use Item
+I - Organize inventory
 
 //Debug
 \ - Show FPS
 R - Regenerate World
-I - Render world as image
+P - Render world as image
 G - Print player coordinates
 F11 - Fullscreen
+[ - Decrease game speed
+] - Increase game speed
+= - Reset game speed to 1
+- - Skip action wait time

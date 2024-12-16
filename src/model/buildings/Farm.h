@@ -2,6 +2,8 @@
 #define FARM_H
 
 #include "Building.h"
+#include "model/items/containers/ItemContainer.h"
+#include "model/items/ItemStack.h"
 
 class Farm : public Building {
 public:
@@ -11,6 +13,7 @@ public:
 	void grow(float,float);
 	int getTextureIndex();
 	char getID();
+	void harvest(ItemContainer*);
 private:
 	float cropGrowth;
 	float getCropGrowthSpeed();

@@ -59,3 +59,25 @@ ItemStack* ItemStack::create(ItemID id, int quantity) {
 	if (quantity > MAX_QUANTITY) return nullptr;
 	return new ItemStack(id, quantity);
 }
+bool ItemStack::isFood() {
+	return getCalories() > 0;
+}
+int ItemStack::getCalories() {
+	return getCalories(id);
+}
+int ItemStack::getCalories(ItemID id) {
+	switch (id) {
+	case MANGO: return 80;
+	default: return 0;
+	}
+}
+ItemStack* ItemStack::split(int quantity) {
+	if (!decrease(quantity)) return nullptr;
+	return create(id, quantity);
+}
+bool ItemStack::decrease(int quantity) {
+	if (quantity >= getQuantity()) return false;
+
+	this->quantity -= quantity;
+	return true;
+}

@@ -30,6 +30,9 @@ int screenWidth = 1280;
 int screenHeight = 720;
 bool drawFPS = false;
 double runtime = 0.0;
+float runtimeSpeed = 1.0;
+float skip = 0.0;
+Texture sleeping;
 //
 
 //DATA
@@ -79,6 +82,7 @@ void initialize() {
 	registerPerson(new Person(screenWidth / 2+1, screenHeight / 2));
 
 	InitializeTextures();
+	sleeping = LoadTexture("sleep.png");
 }
 
 void clear() {
@@ -86,6 +90,7 @@ void clear() {
 	delete player;
 	delete[] people;
 	UninitializeTextures();
+	UnloadTexture(sleeping);
 }
 
 int main ()
@@ -103,7 +108,7 @@ int main ()
 	initialize();
 	
 	// game loop
-	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
+	while (!WindowShouldClose() && player != nullptr)		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
 		GameLoop();
 	}
@@ -126,8 +131,47 @@ static void resetTiles() {
 	delete world;
 	world = new World(WORLD_SIZE*WORLD_ASPECT_RATIO, WORLD_SIZE);
 }
+void ChangeSpeed(bool increase) {
+	if (increase) runtimeSpeed += 1;
+	else if (runtimeSpeed <= 1) return;
+	else runtimeSpeed -= 1;
+}
+void NormalDraw() {
+	HandleInputs(world, player);
+
+	if (IsKeyPressed(KEY_R)) resetTiles();//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
+	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
+	if (IsKeyPressed(KEY_P)) SaveMapImage();
+	if (IsKeyPressed(KEY_G)) printf("(%d,%d)\n", player->getX(), player->getY());
+	if (IsKeyPressed(KEY_F11)) {
+		ToggleBorderlessWindowed();
+		screenWidth = GetScreenWidth();
+		screenHeight = GetScreenHeight();
+	}
+	if (IsKeyPressed(KEY_LEFT_BRACKET) || IsKeyPressed(KEY_RIGHT_BRACKET)) ChangeSpeed(IsKeyPressed(KEY_RIGHT_BRACKET));
+	if (IsKeyPressed(KEY_MINUS) && skip == 0) skip = player->getWaitTime();
+	if(IsKeyPressed(KEY_EQUAL)) runtimeSpeed = 1;
+
+	// draw our textures to the screen
+	DrawTiles(screenHeight, screenWidth, -player->getX(), -player->getY(), world);
+	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, peopleArraySize);
+	DrawGUI(player);
+	DrawClock();
+	FPS();
+}
+void SleepyTime() {
+	DrawClock();
+	DrawTexture(sleeping, 0, 0, WHITE);
+}
+void Kill(int index) {
+	delete people[index];
+	people[index] = nullptr;
+	if (index == 0) player = nullptr;
+	population--;
+}
 void GameLoop() {
-	const float delta_t = GetFrameTime();
+	const float delta_t = GetFrameTime() * (player->isSleeping() ? 500 : 1) * runtimeSpeed + skip;
+	skip = 0;
 	//printf("Delta T: %f\n", delta_t);
 
 	CheckScreenSize();
@@ -135,26 +179,10 @@ void GameLoop() {
 	BeginDrawing();
 
 	// Setup the backbuffer for drawing (clear color and depth buffers)
-	ClearBackground(GRAY);
+	ClearBackground(BLACK);
 
-	HandleInputs(world,player);
-
-	if (IsKeyPressed(KEY_R)) resetTiles();//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
-	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
-	if (IsKeyPressed(KEY_PRINT_SCREEN)) SaveMapImage();
-	if (IsKeyPressed(KEY_G)) printf("(%d,%d)\n",player->getX(),player->getY());
-	if (IsKeyPressed(KEY_F11)) {
-		ToggleBorderlessWindowed();
-		screenWidth = GetScreenWidth();
-		screenHeight = GetScreenHeight();
-	}
-
-	// draw our textures to the screen
-	DrawTiles(screenHeight,screenWidth,-player->getX(), -player->getY(), world);
-	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, peopleArraySize);
-	DrawGUI(player);
-	DrawClock();
-	FPS();
+	if (player->isSleeping()) SleepyTime();
+	else NormalDraw();
 
 
 	// end the frame and get ready for the next one  (display frame, poll input, etc...)
@@ -167,13 +195,21 @@ void GameLoop() {
 	world->updateTiles(TILE_UPDATES_PER_TICK, delta_t);
 	world->updateClock(delta_t);
 	
-	for (int i = 0; i < population; i++) if (people[i] != nullptr) people[i]->update(delta_t);
+	for (int i = 0; i < population; i++) {
+		if (people[i] == nullptr) continue;
+
+		people[i]->update(delta_t);
+		if (people[i]->healthBar() < 0) Kill(i);
+	}
 }
 void DrawClock() {
 	char* timetxt = world->getTime();
-	DrawText(timetxt, screenWidth/100, screenWidth/100, 16, WHITE);
+	DrawText(timetxt, screenWidth/100, screenHeight/100, 16, WHITE);
 	//printf(timetxt);
 	delete timetxt;
+
+	if (runtimeSpeed < 1.0) DrawText("Slow", screenWidth / 100, screenHeight / 100 + 20, 16, WHITE);
+	else if (runtimeSpeed > 1.0) DrawText("Fast", screenWidth / 100, screenHeight / 100 + 20, 16, WHITE);
 }
 void SaveMapImage() {
 	Image image = GenImageColor(WORLD_SIZE*WORLD_ASPECT_RATIO, WORLD_SIZE, BLANK);

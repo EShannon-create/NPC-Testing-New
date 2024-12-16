@@ -13,20 +13,39 @@ public:
 	Person();
 	Person(int, int);
 	~Person();
-	void move(int, int, bool);
+	void move(int, int, bool, World* world);
 	int getX();
 	int getY();
 	void forage(World*);
 	bool build(World*, char);
-	bool isActing();
+	bool acting();
 	void update(float);
 	char* getWaitText();
 	float getWaitTime();
 	Inventory* getInventory();
 	void organizeInventory();
+
+	float healthBar();
+	float hungerBar();
+	float staminaBar();
+
+	void takeDamage(float);
+	bool eat();
+	bool eat(int);
+
+	void sleep();
+	bool isSleeping();
 private:
 	int x;
 	int y;
+
+	float health;
+	float hunger;
+	float stamina;
+	float max_stamina;
+	bool exhaust(float);
+	void rest();
+	void eat(float);
 
 	float actionTimer;
 	void wait(char*,float);

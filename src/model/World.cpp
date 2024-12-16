@@ -52,6 +52,8 @@ World::World(int width, int height) : width(width), height(height){
 	delete fertilityMap;
 	updateIndex = 0;
 	Tile::InitRandom(time(0));
+
+	analyze();
 }
 World::~World() {
 	delete[] map;
@@ -119,13 +121,13 @@ char* World::getTime() {
 	tr[2] = year / 10 % 10 + 48;
 	tr[3] = year % 10 + 48;
 	tr[4] = '/';
-	tr[5] = month > 10 ? '1' : '0';
+	tr[5] = month >= 10 ? '1' : '0';
 	tr[6] = month % 10 + 48;
 	tr[7] = '/';
 	tr[8] = date / 10 % 10 + 48;
 	tr[9] = date % 10 + 48;
 	tr[10] = ' ';
-	tr[11] = hours > 10 ? '1' : '0';
+	tr[11] = hours >= 10 ? '1' : '0';
 	tr[12] = hours % 10 + 48;
 	tr[13] = ':';
 	tr[14] = minutes / 10 % 10 + 48;
@@ -136,4 +138,26 @@ char* World::getTime() {
 	tr[19] = '\0';
 
 	return tr;
+}
+float World::getSunAngle() {
+	float f = fmodf(currentTime * 360.0 / (float)(DAY_LENGTH)  - 90,360.0);
+	if (f < 0) f += 360;
+	return f;
+}
+void World::analyze() {
+	int desertCount = 0;
+	int lowFertCount = 0;
+	int highFertCount = 0;
+	int jungleCount = 0;
+	for (int i = 0; i < width * height; i++) {
+		Tile* t = map[i];
+		int fert = t->fertilityGrade();
+		switch (fert) {
+		case 0: desertCount++; break;
+		case 1: lowFertCount++; break;
+		case 2: highFertCount++; break;
+		case 3: jungleCount++; break;
+		}
+	}
+	printf("Desert Count: %d\nLow Fertility Count: %d\nHigh Fertility Count: %d\nJungle Count: %d\n",desertCount,lowFertCount,highFertCount,jungleCount);
 }

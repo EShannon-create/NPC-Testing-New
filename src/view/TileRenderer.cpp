@@ -5,6 +5,11 @@
 #define FERTILITY_GRADES 4
 #define BUILDING_TEXTURES 3
 
+#define GOLDEN_HOUR Color{200,140,40,255}
+#define NIGHT Color{90,112,150,255}
+#define DAY Color{255,255,255,255}
+#define TWILIGHT_ANGLE 15
+
 Texture2D* land;
 Texture2D* growth;
 Texture2D* buildingTextures;
@@ -85,7 +90,7 @@ void DrawEntities(int screenHeight, int screenWidth, int offsetX, int offsetY, P
 			int draw_x = modw(x+offsetX+ tileWidth / 2 - 1);
 			int draw_y = modh(y+offsetY+tileHeight/2-1);
 			DrawTexture(chuddie, draw_x*TILE_SIZE, draw_y * TILE_SIZE, WHITE);
-			if (person->isActing()) {
+			if (person->acting()) {
 				char* text = person->getWaitText();
 				DrawText(text, draw_x * TILE_SIZE + TILE_SIZE, draw_y * TILE_SIZE,TILE_SIZE/2,WHITE);
 				//printf("%f\n",person->getWaitTime());
@@ -95,10 +100,41 @@ void DrawEntities(int screenHeight, int screenWidth, int offsetX, int offsetY, P
 	}
 }
 
+Color clerp(Color a, Color s, float x) {
+	unsigned char r = a.r + (s.r - a.r) * x;
+	unsigned char g = a.g + (s.g - a.g) * x;
+	unsigned char b = a.b + (s.b - a.b) * x;
+	unsigned char t = a.a + (s.a - a.a) * x;
+	return Color{ r,g,b,t };
+}
+Color getTint(float sunAngle) {
+	if (sunAngle < TWILIGHT_ANGLE) {
+		float x = (sunAngle) / TWILIGHT_ANGLE;
+		return clerp(GOLDEN_HOUR, DAY, x);
+	}
+	if (sunAngle < 180-TWILIGHT_ANGLE) return DAY;
+	if (sunAngle < 180) {
+		float x = (sunAngle - 180 + TWILIGHT_ANGLE) / TWILIGHT_ANGLE;
+		return clerp(DAY, GOLDEN_HOUR, x);
+	}
+	if (sunAngle < 180+TWILIGHT_ANGLE) {
+		float x = (sunAngle - 180) / TWILIGHT_ANGLE;
+		return clerp(GOLDEN_HOUR, NIGHT, x);
+	}
+	if (sunAngle < 360-TWILIGHT_ANGLE) return NIGHT;
+	if (sunAngle < 360) {
+		float x = (sunAngle - 360 + TWILIGHT_ANGLE) / TWILIGHT_ANGLE;
+		return clerp(NIGHT, GOLDEN_HOUR, x);
+	}
+
+	return RED;
+}
+
 void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, World* world) {
 	int tileHeight = getTileHeight(screenHeight);
 	int tileWidth = getTileWidth(screenWidth);
 
+	Color tint = getTint(world->getSunAngle());
 	
 	for (int i = 0; i < tileHeight; i++) {
 		for (int j = 0; j < tileWidth+1; j++) {
@@ -111,18 +147,18 @@ void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, Worl
 			//if (si == 0 && sj == 0) continue;
 
 			Tile* tile = world->getTile(sj, si);
-			if (tile->isWater()) DrawTexture(water, x, y, WHITE);
+			if (tile->isWater()) DrawTexture(water, x, y, tint);
 			else {
 				int grade = tile->fertilityGrade();
-				DrawTexture(land[grade], x, y, WHITE);
+				DrawTexture(land[grade], x, y, tint);
 				int growthGrade = tile->growthGrade();
 				//printf("Wild Growth: %f, Grade: %d\n",tile->getWildGrowth(),growthGrade);
-				if (growthGrade > 0) DrawTexture(growth[growthGrade - 1], x, y, WHITE);
+				if (growthGrade > 0) DrawTexture(growth[growthGrade - 1], x, y, tint);
 
 				int buildingTexture = tile->getBuildingTextureIndex();
 				if (buildingTexture == -1) continue;
 
-				DrawTexture(buildingTextures[buildingTexture], x, y, WHITE);
+				DrawTexture(buildingTextures[buildingTexture], x, y, tint);
 			}
 
 		}
