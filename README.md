@@ -1,7 +1,11 @@
 To do:
 -Create a chuddie handler object
--Chuddies must swim over water
--Health, Hunger, Stamina
+-Farming:
+	-New textures
+		-Plowed
+		-Sowed
+		-Ready to harvest
+-Update action selection
 
 Actions:
 -Forage wild growth

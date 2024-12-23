@@ -1,21 +1,17 @@
 #include "Farm.h"
 
 Farm::Farm() {
-	cropGrowth = 0;
+	crop = nullptr;
 }
 Farm::~Farm() {
-
+	delete crop;
 }
 float Farm::getCropGrowth() {
-	return cropGrowth;
+	if (crop == nullptr) return 0;
+	return crop->getCropGrowth();
 }
 void Farm::grow(float maxAmount, float speedModifier) {
-	if (cropGrowth == maxAmount) return;
-	cropGrowth += this->getCropGrowthSpeed()*speedModifier;
-	if (cropGrowth > maxAmount) cropGrowth = maxAmount;
-}
-float Farm::getCropGrowthSpeed() {
-	return 0.005f;
+	if (crop != nullptr) crop->grow(maxAmount, speedModifier);
 }
 int Farm::getTextureIndex() {
 	if (!isComplete()) return 0;
@@ -23,4 +19,14 @@ int Farm::getTextureIndex() {
 }
 char Farm::getID() {
 	return 'F';
+}
+void Farm::harvest(ItemContainer* to) {
+	if (crop == nullptr) return;
+	if (!crop->isFinished()) return;
+
+	ItemStack* stack = crop->harvest();
+	to->add(stack);
+
+	delete crop;
+	crop = nullptr;
 }

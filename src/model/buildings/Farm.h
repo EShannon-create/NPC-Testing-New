@@ -4,6 +4,7 @@
 #include "Building.h"
 #include "model/items/containers/ItemContainer.h"
 #include "model/items/ItemStack.h"
+#include "model/crops/Crop.h"
 
 class Farm : public Building {
 public:
@@ -15,8 +16,7 @@ public:
 	char getID();
 	void harvest(ItemContainer*);
 private:
-	float cropGrowth;
-	float getCropGrowthSpeed();
+	Crop* crop;
 };
 
 #endif
