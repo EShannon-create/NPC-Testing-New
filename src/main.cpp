@@ -231,6 +231,24 @@ void SaveMapImage() {
 		ImageDrawPixel(&image, x, y, RED);
 	}
 	ExportImage(image, "renders/world.png");
+
+	for (int y = 0; y < WORLD_SIZE; y++) {
+		for (int x = 0; x < WORLD_SIZE * WORLD_ASPECT_RATIO; x++) {
+			Tile* tile = world->getTile(x, y);
+			if (tile->isWater()) continue;
+
+			Color finalColor = BLACK;
+			Color full[MINERAL_TYPES] = { BLACK, GREEN, RED, WHITE, YELLOW };
+			for (int i = 0; i < MINERAL_TYPES; i++) {
+				Color color = ColorLerp(full[i], DARKGRAY, tile->getMineralValue(i));
+				finalColor = ColorLerp(finalColor, color, 1.0f / MINERAL_TYPES);
+
+			}
+			ImageDrawPixel(&image, x, y, finalColor);
+		}
+	}
+	ExportImage(image, "renders/mineral.png");
+
 	UnloadImage(image);
 }
 void CheckScreenSize() {

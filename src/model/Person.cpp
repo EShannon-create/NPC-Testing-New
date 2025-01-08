@@ -214,3 +214,6 @@ bool Person::eat(int index) {
 bool Person::eat() {
 	return eat(inventory->getSelectionIndex());
 }
+void Person::plant(World* world) {
+	Tile* t = world->getTile(x, y);
+}

@@ -8,9 +8,11 @@
 #include "items/ItemStack.h"
 #include <random>
 
+#define MINERAL_TYPES 5
+
 class Tile {
 public:
-	Tile(float, float);
+	Tile(float, float, float[]);
 	~Tile();
 	bool isLand();
 	bool isWater();
@@ -25,16 +27,18 @@ public:
 	int getBuildingTextureIndex();
 	bool harvest(ItemContainer*);
 
+	float getMineralValue(int);
+
 	static void InitRandom(int);
 private:
 	float height;
 	float fertility;
 	float wildGrowth;
 	Building* building;
+	float minerals[5];
 
 	bool harvestWildGrowth(ItemContainer*);
 	bool harvestCropGrowth(ItemContainer*);
 	static int roll(int, int);
 };
-
 #endif

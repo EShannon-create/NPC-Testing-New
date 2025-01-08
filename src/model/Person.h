@@ -16,8 +16,11 @@ public:
 	void move(int, int, bool, World* world);
 	int getX();
 	int getY();
+
 	void forage(World*);
 	bool build(World*, char);
+	void plant(World*);
+
 	bool acting();
 	void update(float);
 	char* getWaitText();

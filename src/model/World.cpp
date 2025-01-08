@@ -5,6 +5,7 @@
 #define NOISE_SCALE 0.05f
 #define TERRAIN_ZOOM_SCALE 33
 #define FERTILITY_ZOOM_SCALE 10
+#define MINERAL_ZOOM_SCALE 5
 #define DAY_LENGTH 24*60 //Remember, 1 second IRL -> 1 minute in game, this is the real life seconds for an in game day
 #define DROPOFF_LIMIT 0.8
 
@@ -31,6 +32,11 @@ World::World(int width, int height) : width(width), height(height){
 	Octave* heightMap = new Octave(time(0),TERRAIN_ZOOM_SCALE);
 	Octave* fertilityMap = new Octave(time(0)*2,FERTILITY_ZOOM_SCALE);
 
+	Octave** mineralMaps = new Octave * [MINERAL_TYPES];
+	for (int i = 0; i < MINERAL_TYPES; i++) {
+		mineralMaps[i] = new Octave(time(0) * (i + 3), MINERAL_ZOOM_SCALE);
+	}
+
 	const int spot = width * height / 100;
 
 	for (int i = 0; i < width * height; ++i) {
@@ -43,13 +49,22 @@ World::World(int width, int height) : width(width), height(height){
 		float terrainHeight = heightMap->sample(x, y);//+calculateDropOff(x, y);
 		float fertility = fertilityMap->sample(x, y);
 
-		map[i] = new Tile(terrainHeight, fertility);
+		float minerals[MINERAL_TYPES];
+		for (int j = 0; j < MINERAL_TYPES; j++) {
+			float sample = mineralMaps[j]->sample(x, y);
+			minerals[j] = sample < 0 ? -sample : sample;
+		}
+
+
+		map[i] = new Tile(terrainHeight, fertility, minerals);
 		if ((i+1) % (spot) == spot - 1) printf(".");
 		if ((i + 1) % (spot*10) == spot*10 - 1) printf("\n");
 	}
 
 	delete heightMap;
 	delete fertilityMap;
+	for (int i = 0; i < MINERAL_TYPES; i++) delete mineralMaps[i];
+	delete[] mineralMaps;
 	updateIndex = 0;
 	Tile::InitRandom(time(0));
 

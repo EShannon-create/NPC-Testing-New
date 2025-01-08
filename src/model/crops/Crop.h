@@ -1,7 +1,7 @@
 #ifndef CROP_H
 #define CROP_H
 
-#include "model/items/ItemStack.h"
+//#include "model/items/ItemStack.h"
 
 class Crop {
 public:
@@ -9,7 +9,7 @@ public:
 	~Crop();
 	float getCropGrowth();
 	void grow(float, float);
-	ItemStack* harvest();
+	//ItemStack* harvest();
 	bool isFinished();
 private:
 	float cropGrowth;

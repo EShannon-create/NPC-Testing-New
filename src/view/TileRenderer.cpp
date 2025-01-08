@@ -100,31 +100,24 @@ void DrawEntities(int screenHeight, int screenWidth, int offsetX, int offsetY, P
 	}
 }
 
-Color clerp(Color a, Color s, float x) {
-	unsigned char r = a.r + (s.r - a.r) * x;
-	unsigned char g = a.g + (s.g - a.g) * x;
-	unsigned char b = a.b + (s.b - a.b) * x;
-	unsigned char t = a.a + (s.a - a.a) * x;
-	return Color{ r,g,b,t };
-}
 Color getTint(float sunAngle) {
 	if (sunAngle < TWILIGHT_ANGLE) {
 		float x = (sunAngle) / TWILIGHT_ANGLE;
-		return clerp(GOLDEN_HOUR, DAY, x);
+		return ColorLerp(GOLDEN_HOUR, DAY, x);
 	}
 	if (sunAngle < 180-TWILIGHT_ANGLE) return DAY;
 	if (sunAngle < 180) {
 		float x = (sunAngle - 180 + TWILIGHT_ANGLE) / TWILIGHT_ANGLE;
-		return clerp(DAY, GOLDEN_HOUR, x);
+		return ColorLerp(DAY, GOLDEN_HOUR, x);
 	}
 	if (sunAngle < 180+TWILIGHT_ANGLE) {
 		float x = (sunAngle - 180) / TWILIGHT_ANGLE;
-		return clerp(GOLDEN_HOUR, NIGHT, x);
+		return ColorLerp(GOLDEN_HOUR, NIGHT, x);
 	}
 	if (sunAngle < 360-TWILIGHT_ANGLE) return NIGHT;
 	if (sunAngle < 360) {
 		float x = (sunAngle - 360 + TWILIGHT_ANGLE) / TWILIGHT_ANGLE;
-		return clerp(NIGHT, GOLDEN_HOUR, x);
+		return ColorLerp(NIGHT, GOLDEN_HOUR, x);
 	}
 
 	return RED;

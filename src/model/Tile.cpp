@@ -21,13 +21,17 @@ float fertilityModifier(float input) {
 	return sqrt * 0.5 + 0.5;
 }
 
-Tile::Tile(float height, float fertility) : height(height), fertility(fertilityModifier(fertility)) {
+Tile::Tile(float height, float fertility, float minerals[]) : height(height), fertility(fertilityModifier(fertility)) {
 	wildGrowth = this->fertility;
 	building = nullptr;
+	for (int i = 0; i < MINERAL_TYPES; i++) {
+		this->minerals[i] = minerals[i];
+	}
 }
 Tile::~Tile() {
 	//This will be relevant when I add buildings
 	delete building;
+	delete[] minerals;
 }
 bool Tile::isLand() {
 	return height > LAND_THRESHOLD;
@@ -39,18 +43,27 @@ float Tile::getWildGrowth() {
 	return wildGrowth;
 }
 void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, float speedModifier) {//Speed modifier is passed in as count, so if more tiles are updated per tick it does not effect how fast a tile's wild growth regenerates
-	if (wildGrowth == fertility) return;
+	float cropGrowth = 0;
+	Farm* farm = nullptr;
+	if (building != nullptr && building->getID() == 'F') {
+		Farm* farm = static_cast<Farm*>(building);
+		cropGrowth = farm->getCropGrowth();
+	}
+	
+	
+	if (wildGrowth+cropGrowth == fertility) return;
 
-	//printf("Speed Modfifier: %f, %f\nWild Growth: %f\n", speedModifier, WILD_GROWTH_SPEED * speedModifier, wildGrowth);
+	if (farm != nullptr) {
+		farm->grow(fertility - wildGrowth, speedModifier);
+		cropGrowth = farm->getCropGrowth();
+	}
 
 	wildGrowth += north->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
 	wildGrowth += south->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
 	wildGrowth += east->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
 	wildGrowth += west->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
-	
-	if (wildGrowth > fertility) wildGrowth = fertility;
 
-	//printf("Wild Growth: %f, Growth Grade: %d\n", wildGrowth, growthGrade());
+	if (wildGrowth+cropGrowth > fertility) wildGrowth = fertility-cropGrowth;
 }
 int Tile::fertilityGrade() {
 	float range = 1.0 / FERTILITY_GRADES;
@@ -120,8 +133,7 @@ bool Tile::harvestWildGrowth(ItemContainer* ic) {
 }
 bool Tile::harvestCropGrowth(ItemContainer* ic) {
 	Farm* farm = static_cast<Farm*>(building);
-
-	return true;
+	return farm->harvest(ic);
 }
 bool Tile::harvest(ItemContainer* ic) {
 	if (building != nullptr && building->getID() == 'F') return harvestCropGrowth(ic);
@@ -135,4 +147,7 @@ Inclusive [min,max]
 */
 int Tile::roll(int min, int max) {
 	return rand() % (++max - min) + min;
+}
+float Tile::getMineralValue(int mineral) {
+	return minerals[mineral];
 }

@@ -20,13 +20,14 @@ int Farm::getTextureIndex() {
 char Farm::getID() {
 	return 'F';
 }
-void Farm::harvest(ItemContainer* to) {
-	if (crop == nullptr) return;
-	if (!crop->isFinished()) return;
+bool Farm::harvest(ItemContainer* to) {
+	if (crop == nullptr) return false;
+	if (!crop->isFinished()) return false;
 
-	ItemStack* stack = crop->harvest();
-	to->add(stack);
+	//ItemStack* stack = crop->harvest();
+	//to->add(stack);
 
 	delete crop;
 	crop = nullptr;
+	return true;
 }

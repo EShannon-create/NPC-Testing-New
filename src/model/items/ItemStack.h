@@ -3,8 +3,10 @@
 
 #define MAX_QUANTITY 64
 
+#include "model/crops/Crop.h"
+
 enum ItemID {
-	MANGO, STICK
+	MANGO, STICK, WHEAT_SEED
 };
 
 class ItemStack {
@@ -20,11 +22,13 @@ public:
 	static ItemStack* create(ItemID, int);
 	ItemStack* split(int);
 	bool decrease(int);
+	//Crop* getCrop();
 private:
 	int quantity;
 	ItemID id;
 	const static char* getItemName(ItemID);
 	static int getCalories(ItemID);
+	//static Crop* getCrop(ItemID);
 	ItemStack(ItemID, int);
 };
 

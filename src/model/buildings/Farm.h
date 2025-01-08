@@ -14,7 +14,7 @@ public:
 	void grow(float,float);
 	int getTextureIndex();
 	char getID();
-	void harvest(ItemContainer*);
+	bool harvest(ItemContainer*);
 private:
 	Crop* crop;
 };

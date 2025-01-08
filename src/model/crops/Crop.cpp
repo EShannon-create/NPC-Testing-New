@@ -14,9 +14,9 @@ void Crop::grow(float maxAmount, float speedModifier) {
 	cropGrowth += getCropGrowthSpeed() * speedModifier;
 	if (cropGrowth > maxAmount) cropGrowth = maxAmount;
 }
-ItemStack* Crop::harvest() {
-	return ItemStack::create(STICK, 1);
-}
+//ItemStack* Crop::harvest() {
+//	return ItemStack::create(STICK, 1);
+//}
 bool Crop::isFinished() {
 	return cropGrowth >= getMinimumGrowthToHarvest();
 }

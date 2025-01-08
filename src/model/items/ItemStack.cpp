@@ -51,6 +51,7 @@ const char* ItemStack::getItemName(ItemID id) {
 	switch (id) {
 	case MANGO: return " .. Mango\0";
 	case STICK: return " .. Stick\0";
+	case WHEAT_SEED: return " .. Wheat Seed\0";
 	default: return " .. NONE\0";
 	}
 }
@@ -81,3 +82,13 @@ bool ItemStack::decrease(int quantity) {
 	this->quantity -= quantity;
 	return true;
 }
+/*
+Crop* ItemStack::getCrop(ItemID id) {
+	switch (id) {
+	default: return nullptr;
+	}
+}
+Crop* ItemStack::getCrop() {
+	return getCrop(id);
+}
+*/
