@@ -1,4 +1,5 @@
 #include "Crop.h"
+#include "WatermelonCrop.h"
 
 Crop::Crop() {
 	cropGrowth = 0;
@@ -14,9 +15,9 @@ void Crop::grow(float maxAmount, float speedModifier) {
 	cropGrowth += getCropGrowthSpeed() * speedModifier;
 	if (cropGrowth > maxAmount) cropGrowth = maxAmount;
 }
-//ItemStack* Crop::harvest() {
-//	return ItemStack::create(STICK, 1);
-//}
+void Crop::harvest(ItemContainer* ic) {
+	return;
+}
 bool Crop::isFinished() {
 	return cropGrowth >= getMinimumGrowthToHarvest();
 }
@@ -25,4 +26,17 @@ float Crop::getMinimumGrowthToHarvest() {
 }
 float Crop::getCropGrowthSpeed() {
 	return 0.005f;
+}
+Crop* Crop::getCrop(ItemStack* item) {
+	switch (item->getID()) {
+	default: return nullptr;
+	case WATERMELON_SEED: return new WatermelonCrop();
+	}
+}
+
+/*
+Inclusive [min,max]
+*/
+int roll(int min, int max) {
+	return rand() % (++max - min) + min;
 }

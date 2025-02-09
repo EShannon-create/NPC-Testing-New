@@ -1,26 +1,37 @@
 #include "GUIRenderer.h"
 
-void DrawGUI(Person* player) {
+void DrawGUI(Person* player, ChoiceMenu* menu) {
 	if (player == nullptr) return;
 
-	Inventory* inventory = player->getInventory();
-
-	int s = inventory->getSelectionIndex();
-
-	for (int i = 0; i < inventory->getSize(); i++) {
-		ItemStack* item = inventory->get(i);
-		if (item == nullptr) {
-			if(s == i) DrawText("*", GetScreenWidth() / 5 * 4, 25 + i * 25, 20, WHITE);
-			else DrawText("-", GetScreenWidth() / 5 * 4, 25+i*25, 20, WHITE);
-			continue;
+	if (menu) {
+		const int choices = menu->getChoices();
+		for (int i = 0; i < choices; i++) {
+			char* txt = menu->getChoiceName(i);
+			if (i == menu->getSelectedIndex()) txt[0] = '*';
+			DrawText(txt, GetScreenWidth() / 5 * 4, 25 + i * 25, 20, WHITE);
+			delete txt;
 		}
+	}
+	else {
+		Inventory* inventory = player->getInventory();
 
-		char* txt = item->getName();
-		if (s == i) txt[0] = '*';
-		else txt[0] = '-';
+		int s = inventory->getSelectionIndex();
 
-		DrawText(txt, GetScreenWidth() / 5 * 4, 25+i*25, 20, WHITE);
-		delete txt;
+		for (int i = 0; i < inventory->getSize(); i++) {
+			ItemStack* item = inventory->get(i);
+			if (item == nullptr) {
+				if (s == i) DrawText("*", GetScreenWidth() / 5 * 4, 25 + i * 25, 20, WHITE);
+				else DrawText("-", GetScreenWidth() / 5 * 4, 25 + i * 25, 20, WHITE);
+				continue;
+			}
+
+			char* txt = item->getName();
+			if (s == i) txt[0] = '*';
+			else txt[0] = '-';
+
+			DrawText(txt, GetScreenWidth() / 5 * 4, 25 + i * 25, 20, WHITE);
+			delete txt;
+		}
 	}
 
 	float healthbar = player->healthBar();

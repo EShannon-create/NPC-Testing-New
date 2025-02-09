@@ -83,6 +83,8 @@ void initialize() {
 
 	InitializeTextures();
 	sleeping = LoadTexture("sleep.png");
+
+	InitializeChoiceMenus();
 }
 
 void clear() {
@@ -91,6 +93,7 @@ void clear() {
 	delete[] people;
 	UninitializeTextures();
 	UnloadTexture(sleeping);
+	DestroyChoiceMenus();
 }
 
 int main ()
@@ -155,7 +158,7 @@ void NormalDraw() {
 	// draw our textures to the screen
 	DrawTiles(screenHeight, screenWidth, -player->getX(), -player->getY(), world);
 	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, peopleArraySize);
-	DrawGUI(player);
+	DrawGUI(player,getOpenChoiceMenu());
 	DrawClock();
 	FPS();
 }
@@ -232,23 +235,24 @@ void SaveMapImage() {
 	}
 	ExportImage(image, "renders/world.png");
 
-	for (int y = 0; y < WORLD_SIZE; y++) {
-		for (int x = 0; x < WORLD_SIZE * WORLD_ASPECT_RATIO; x++) {
-			Tile* tile = world->getTile(x, y);
-			if (tile->isWater()) continue;
+	Color full[MINERAL_TYPES] = { DARKGRAY, GREEN, RED, WHITE, YELLOW };
+	for (int i = 0; i < MINERAL_TYPES; i++) {
+		for (int y = 0; y < WORLD_SIZE; y++) {
+			for (int x = 0; x < WORLD_SIZE * WORLD_ASPECT_RATIO; x++) {
+				Tile* tile = world->getTile(x, y);
+				if (tile->isWater()) continue;
 
-			Color finalColor = BLACK;
-			Color full[MINERAL_TYPES] = { BLACK, GREEN, RED, WHITE, YELLOW };
-			for (int i = 0; i < MINERAL_TYPES; i++) {
-				Color color = ColorLerp(full[i], DARKGRAY, tile->getMineralValue(i));
-				finalColor = ColorLerp(finalColor, color, 1.0f / MINERAL_TYPES);
+				float mineral = tile->getMineralValue(i);
 
+				Color color = ColorLerp(BLACK, full[i], tile->getMineralValue(i));
+				ImageDrawPixel(&image, x, y, color);
 			}
-			ImageDrawPixel(&image, x, y, finalColor);
 		}
-	}
-	ExportImage(image, "renders/mineral.png");
+		char dir[] = "renders/mineral .png";
+		dir[15] = i + 49;
+		ExportImage(image, dir);
 
+	}
 	UnloadImage(image);
 }
 void CheckScreenSize() {

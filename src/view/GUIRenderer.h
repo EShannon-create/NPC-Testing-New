@@ -3,7 +3,8 @@
 
 #include "raylib.h"
 #include "model/Person.h"
+#include "controller/ChoiceMenu.h"
 
-void DrawGUI(Person* player);
+void DrawGUI(Person* player, ChoiceMenu* menu);
 
 #endif

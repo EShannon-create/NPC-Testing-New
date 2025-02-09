@@ -4,9 +4,9 @@
 //#include <stdio.h>
 
 #define LAND_THRESHOLD 0
-#define WILD_GROWTH_SPEED 0.005
+#define WILD_GROWTH_SPEED 0.0005
 #define FERTILITY_GRADES 4
-#define MINIMUM_FERTILITY_FOR_HARVEST 0.25
+#define MINIMUM_FERTILITY_FOR_HARVEST 0.4
 #define FERTILITY_PER_HARVEST_ROLL 0.15
 
 #define MINIMUM_MANGOS_PER_ROLL 0
@@ -49,6 +49,10 @@ void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, float 
 		Farm* farm = static_cast<Farm*>(building);
 		cropGrowth = farm->getCropGrowth();
 	}
+	else if (building != nullptr) {
+		wildGrowth = 0;
+		return;
+	}
 	
 	
 	if (wildGrowth+cropGrowth == fertility) return;
@@ -56,6 +60,8 @@ void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, float 
 	if (farm != nullptr) {
 		farm->grow(fertility - wildGrowth, speedModifier);
 		cropGrowth = farm->getCropGrowth();
+
+		wildGrowth += cropGrowth * WILD_GROWTH_SPEED * speedModifier;
 	}
 
 	wildGrowth += north->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
@@ -80,7 +86,13 @@ int Tile::growthGrade() {
 	return 0;
 }
 char* Tile::getInfo() {
-	std::string s = "Wild Growth: " + std::to_string(wildGrowth) + "\nFertility: " + std::to_string(fertility) + "\nBuilding: " +
+	std::string s = "Wild Growth: " + std::to_string(wildGrowth) + "\nFertility: " + std::to_string(fertility)
+		+ "\nCoal: " + std::to_string(minerals[0])
+		+ "\nIron: " + std::to_string(minerals[1])
+		+ "\nCopper: " + std::to_string(minerals[2])
+		+ "\nTin: " + std::to_string(minerals[3])
+		+ "\nGold: " + std::to_string(minerals[4])
+		+ "\nBuilding: " +
 		(building != nullptr ?
 			std::to_string(building->getID())
 			: "NONE")+"\n";
@@ -125,9 +137,9 @@ bool Tile::harvestWildGrowth(ItemContainer* ic) {
 	ItemStack* stick = ItemStack::create(STICK, sticks);
 
 	if (!ic->add(mango)) return false;
-	if (!ic->add(stick)) return true;
+	ic->add(stick);
 
-	wildGrowth = 0;
+	clearWildGrowth();
 
 	return true;
 }
@@ -142,12 +154,12 @@ bool Tile::harvest(ItemContainer* ic) {
 void Tile::InitRandom(int seed) {
 	srand(seed);
 }
-/*
-Inclusive [min,max]
-*/
-int Tile::roll(int min, int max) {
-	return rand() % (++max - min) + min;
-}
 float Tile::getMineralValue(int mineral) {
 	return minerals[mineral];
+}
+Building* Tile::getBuilding() {
+	return building;
+}
+void Tile::clearWildGrowth() {
+	wildGrowth = 0;
 }

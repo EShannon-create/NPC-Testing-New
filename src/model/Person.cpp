@@ -89,9 +89,28 @@ int Person::getY() {
 Tile* Person::getOn(World* world) {
 	return world->getTile(this->getX(), this->getY());
 }
-void Person::forage(World* world) {
-	if (acting() || !exhaust(FORAGING_EXHAUSTION) || !(getOn(world)->harvest(inventory))) return;
-	wait(".... Foraging\0", FORAGING_TIME);
+void Person::tileInteract(World* world) {
+	if (acting() || !exhaust(FORAGING_EXHAUSTION)) return;
+
+	Tile* tile = getOn(world);
+	Building* building = tile->getBuilding();
+
+	if (building == nullptr) {
+		if (tile->harvest(inventory)) wait(".... Foraging\0", FORAGING_TIME);
+	}
+	else switch (building->getID()) {
+	case 'F':
+		if (tile->harvest(inventory)) wait(".... Harvesting\0", FORAGING_TIME);
+		else {
+			tile->clearWildGrowth();
+			wait(".... Weeding\0", FORAGING_TIME);
+		}
+
+	case 'M':
+		// to do
+		break;
+	}
+
 }
 void setWorldDimensions(int width, int height) {
 	worldHeight = height;
@@ -216,4 +235,16 @@ bool Person::eat() {
 }
 void Person::plant(World* world) {
 	Tile* t = world->getTile(x, y);
+	if (t->getBuilding() == nullptr || t->getBuilding()->getID() != 'F') return;
+
+
+	Farm* farm = static_cast<Farm*>(t->getBuilding());
+	int selectionIndex = inventory->getSelectionIndex();
+	ItemStack* item = inventory->get(selectionIndex);
+	Crop* crop = Crop::getCrop(item);
+	if (crop == nullptr) return;
+	if (!farm->plant(crop)) return;
+
+	if (item->getQuantity() == 1) inventory->pop(selectionIndex);
+	item->decrease(1);
 }

@@ -15,6 +15,7 @@ public:
 	int getTextureIndex();
 	char getID();
 	bool harvest(ItemContainer*);
+	bool plant(Crop*);
 private:
 	Crop* crop;
 };

@@ -14,10 +14,37 @@ bool keydown = false;
 #define STUDY_TILE KEY_Q
 #define CONSTRUCT_BUILDING KEY_B
 #define ORGANIZE_INVENTORY KEY_I
-#define INVENTORY_UP KEY_UP
-#define INVENTORY_DOWN KEY_DOWN
+#define SELECTION_UP KEY_UP
+#define SELECTION_DOWN KEY_DOWN
 #define SLEEP KEY_SLASH
-#define USE KEY_ENTER
+#define SELECT KEY_ENTER
+#define PLANT_SEED KEY_PERIOD
+
+ChoiceMenu* buildings;
+ChoiceMenu* openChoiceMenu;
+
+bool build(Person*, World*, char);
+
+ChoiceMenu* getOpenChoiceMenu() {
+	return openChoiceMenu;
+}
+
+void InitializeChoiceMenus() {
+	openChoiceMenu = nullptr;
+
+	int buildingCount = 2;
+	std::string* buildingNames = new std::string [buildingCount];
+	buildingNames[0] = "-House";
+	buildingNames[1] = "-Farm";
+	buildings = new ChoiceMenu(
+		buildingCount,
+		buildingNames,
+		build
+	);
+}
+void DestroyChoiceMenus() {
+	delete buildings;
+}
 
 void HandleInputs(World* world, Person* player) {
 	if (IsKeyPressed(STUDY_TILE)) {
@@ -38,12 +65,28 @@ void HandleInputs(World* world, Person* player) {
 	keydown = IsKeyDown(WALK_UP) || IsKeyDown(WALK_DOWN) || IsKeyDown(WALK_LEFT) || IsKeyDown(WALK_RIGHT);
 	if(keydown) player->move(x, y, running, world);
 
-	if (IsKeyPressed(HARVEST_WILD_GROWTH))  player->forage(world);
-	if (IsKeyPressed(CONSTRUCT_BUILDING)) player->build(world, 'H');
-	if (IsKeyPressed(KEY_F)) player->build(world, 'F');
-	if (IsKeyPressed(INVENTORY_UP)) player->getInventory()->up();
-	if (IsKeyPressed(INVENTORY_DOWN)) player->getInventory()->down();
+	if (IsKeyPressed(HARVEST_WILD_GROWTH))  player->tileInteract(world);
+	if (IsKeyPressed(CONSTRUCT_BUILDING)) openChoiceMenu = buildings;
+	if (IsKeyPressed(SELECTION_UP)) {
+		if (openChoiceMenu) openChoiceMenu->previous();
+		else player->getInventory()->up();
+	}
+	if (IsKeyPressed(SELECTION_DOWN)) {
+		if (openChoiceMenu) openChoiceMenu->next();
+		else player->getInventory()->down();
+	}
 	if (IsKeyPressed(ORGANIZE_INVENTORY)) player->organizeInventory();
 	if (IsKeyPressed(SLEEP)) player->sleep();
-	if (IsKeyPressed(USE)) player->eat();
+	if (IsKeyPressed(SELECT)) {
+		if (openChoiceMenu) {
+			openChoiceMenu->doChoice(player, world);
+			openChoiceMenu = nullptr;
+		}
+		else player->eat();
+	}
+	if (IsKeyPressed(PLANT_SEED)) player->plant(world);
+
+}
+bool build(Person* p, World* w, char c) {
+	p->build(w, c);
 }

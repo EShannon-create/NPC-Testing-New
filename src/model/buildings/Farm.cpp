@@ -24,10 +24,14 @@ bool Farm::harvest(ItemContainer* to) {
 	if (crop == nullptr) return false;
 	if (!crop->isFinished()) return false;
 
-	//ItemStack* stack = crop->harvest();
-	//to->add(stack);
+	crop->harvest(to);
 
 	delete crop;
 	crop = nullptr;
+	return true;
+}
+bool Farm::plant(Crop* seed) {
+	if (crop != nullptr) return false;
+	crop = seed;
 	return true;
 }

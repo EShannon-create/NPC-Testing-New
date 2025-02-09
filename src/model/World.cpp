@@ -5,7 +5,7 @@
 #define NOISE_SCALE 0.05f
 #define TERRAIN_ZOOM_SCALE 33
 #define FERTILITY_ZOOM_SCALE 10
-#define MINERAL_ZOOM_SCALE 5
+#define MINERAL_ZOOM_SCALE 15
 #define DAY_LENGTH 24*60 //Remember, 1 second IRL -> 1 minute in game, this is the real life seconds for an in game day
 #define DROPOFF_LIMIT 0.8
 
@@ -52,7 +52,8 @@ World::World(int width, int height) : width(width), height(height){
 		float minerals[MINERAL_TYPES];
 		for (int j = 0; j < MINERAL_TYPES; j++) {
 			float sample = mineralMaps[j]->sample(x, y);
-			minerals[j] = sample < 0 ? -sample : sample;
+			float abs = sample < 0 ? -sample : sample;
+			minerals[j] = abs*abs;
 		}
 
 

@@ -17,7 +17,7 @@ public:
 	int getX();
 	int getY();
 
-	void forage(World*);
+	void tileInteract(World*);
 	bool build(World*, char);
 	void plant(World*);
 

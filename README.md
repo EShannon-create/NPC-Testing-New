@@ -27,7 +27,7 @@ Shift - Run (Hold)
 
 //Actions
 Q - Study Tile
-E - Forage Wild Growth
+E - Forage Wild Growth, Harvest farm, Weed
 B - Build House        --I want to replace this with opening a menu
 F - Build Farm
 / - Sleep

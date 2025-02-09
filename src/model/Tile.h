@@ -18,6 +18,7 @@ public:
 	bool isWater();
 	float getWildGrowth();
 	void updateGrowth(Tile*, Tile*, Tile*, Tile*, float);
+	void clearWildGrowth();
 	int fertilityGrade();
 	int growthGrade();
 	char* getInfo();
@@ -26,6 +27,8 @@ public:
 	void destroy();
 	int getBuildingTextureIndex();
 	bool harvest(ItemContainer*);
+
+	Building* getBuilding();
 
 	float getMineralValue(int);
 
@@ -39,6 +42,5 @@ private:
 
 	bool harvestWildGrowth(ItemContainer*);
 	bool harvestCropGrowth(ItemContainer*);
-	static int roll(int, int);
 };
 #endif
