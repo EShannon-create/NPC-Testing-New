@@ -3,7 +3,7 @@
 
 #define TILE_SIZE 32
 #define FERTILITY_GRADES 4
-#define BUILDING_TEXTURES 3
+#define BUILDING_TEXTURES 7
 
 #define GOLDEN_HOUR Color{200,140,40,255}
 #define NIGHT Color{90,112,150,255}
@@ -45,7 +45,11 @@ void InitializeTextures() {
 	buildingTextures = new Texture2D[BUILDING_TEXTURES];
 	buildingTextures[0] = LoadTexture("construction.png");
 	buildingTextures[1] = LoadTexture("house.png");
-	buildingTextures[2] = LoadTexture("farm.png");
+	buildingTextures[2] = LoadTexture("empty farm.png");
+	buildingTextures[3] = LoadTexture("stick hut.png");
+	buildingTextures[4] = LoadTexture("mineshaft.png");
+	buildingTextures[5] = LoadTexture("growing farm.png");
+	buildingTextures[6] = LoadTexture("ready farm.png");
 }
 void UninitializeTextures() {
 	for (int i = 0; i < FERTILITY_GRADES; i++) UnloadTexture(land[i]);

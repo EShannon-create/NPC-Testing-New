@@ -1,18 +1,14 @@
-#ifndef HOUSE_H
-#define HOUSE_H
+#pragma once
 
 #include "Building.h"
 
-class House : public Building {
+class Shack : public Building {
 public:
-	House();
-	~House();
+	Shack();
+	~Shack();
 	int getTextureIndex();
 	char getID();
 	bool canSleep();
+protected:
 	float buildingEffort();
-private:
-
 };
-
-#endif

@@ -4,7 +4,7 @@
 //#include <stdio.h>
 
 #define LAND_THRESHOLD 0
-#define WILD_GROWTH_SPEED 0.0005
+#define WILD_GROWTH_SPEED 0.00005
 #define FERTILITY_GRADES 4
 #define MINIMUM_FERTILITY_FOR_HARVEST 0.4
 #define FERTILITY_PER_HARVEST_ROLL 0.15
@@ -46,7 +46,8 @@ void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, float 
 	float cropGrowth = 0;
 	Farm* farm = nullptr;
 	if (building != nullptr && building->getID() == 'F') {
-		Farm* farm = static_cast<Farm*>(building);
+		//printf("Farm exists\n");
+		farm = static_cast<Farm*>(building);
 		cropGrowth = farm->getCropGrowth();
 	}
 	else if (building != nullptr) {
@@ -55,13 +56,16 @@ void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, float 
 	}
 	
 	
-	if (wildGrowth+cropGrowth == fertility) return;
+	if (wildGrowth + cropGrowth == fertility) return;
 
-	if (farm != nullptr) {
+	//printf("Passed return...\n");
+
+	if (farm) {
+		//printf("Farm exists... growing...\n");
 		farm->grow(fertility - wildGrowth, speedModifier);
 		cropGrowth = farm->getCropGrowth();
 
-		wildGrowth += cropGrowth * WILD_GROWTH_SPEED * speedModifier;
+		wildGrowth += cropGrowth * WILD_GROWTH_SPEED * speedModifier * 2;
 	}
 
 	wildGrowth += north->getWildGrowth() * WILD_GROWTH_SPEED * speedModifier;
@@ -86,7 +90,16 @@ int Tile::growthGrade() {
 	return 0;
 }
 char* Tile::getInfo() {
-	std::string s = "Wild Growth: " + std::to_string(wildGrowth) + "\nFertility: " + std::to_string(fertility)
+	float cropGrowth = 0.f;
+
+	if (building != nullptr && building->getID() == 'F') {
+		Farm* farm = static_cast<Farm*>(building);
+		cropGrowth = farm->getCropGrowth();
+	}
+
+	std::string s = "Wild Growth: " + std::to_string(wildGrowth) 
+		+ (cropGrowth >= 0 ? "\nCrop Growth: " + std::to_string(cropGrowth) : "")
+		+ "\nFertility: " + std::to_string(fertility)
 		+ "\nCoal: " + std::to_string(minerals[0])
 		+ "\nIron: " + std::to_string(minerals[1])
 		+ "\nCopper: " + std::to_string(minerals[2])
@@ -113,6 +126,9 @@ bool Tile::build(char ID, float amount) {
 		break;
 	case 'H':
 		building = new House();
+		break;
+	case 'S':
+		building = new Shack();
 		break;
 	}
 	

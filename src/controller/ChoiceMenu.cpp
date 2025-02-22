@@ -4,7 +4,7 @@ ChoiceMenu::ChoiceMenu(int choices, std::string* names, std::function<bool(Perso
 	index = 0;
 }
 ChoiceMenu::~ChoiceMenu() {
-	delete names;
+	delete[] names;
 }
 void ChoiceMenu::next() {
 	index++;

@@ -25,7 +25,7 @@ float Crop::getMinimumGrowthToHarvest() {
 	return 1000;
 }
 float Crop::getCropGrowthSpeed() {
-	return 0.005f;
+	return 0.0015f;
 }
 Crop* Crop::getCrop(ItemStack* item) {
 	switch (item->getID()) {

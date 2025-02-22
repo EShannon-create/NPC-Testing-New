@@ -36,7 +36,7 @@ public:
 	bool eat();
 	bool eat(int);
 
-	void sleep();
+	void sleep(World*);
 	bool isSleeping();
 private:
 	int x;

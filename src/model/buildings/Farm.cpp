@@ -7,7 +7,7 @@ Farm::~Farm() {
 	delete crop;
 }
 float Farm::getCropGrowth() {
-	if (crop == nullptr) return 0;
+	if (crop == nullptr) return -1;
 	return crop->getCropGrowth();
 }
 void Farm::grow(float maxAmount, float speedModifier) {
@@ -15,7 +15,9 @@ void Farm::grow(float maxAmount, float speedModifier) {
 }
 int Farm::getTextureIndex() {
 	if (!isComplete()) return 0;
-	return 2;
+	if (!crop) return 2;
+	if (!crop->isFinished()) return 5;
+	return 6;
 }
 char Farm::getID() {
 	return 'F';
@@ -31,7 +33,11 @@ bool Farm::harvest(ItemContainer* to) {
 	return true;
 }
 bool Farm::plant(Crop* seed) {
+	if (!isComplete()) return false;
 	if (crop != nullptr) return false;
 	crop = seed;
 	return true;
+}
+float Farm::buildingEffort() {
+	return 12.0f;
 }

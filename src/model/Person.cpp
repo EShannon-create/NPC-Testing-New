@@ -6,7 +6,7 @@
 int worldWidth = 0;
 int worldHeight = 0;
 
-#define BUILDING_AMOUNT_PER_TIME 0.05 //This is very low I know, but it should take a lot of chuddies a lot of time to build a building
+#define BUILDING_AMOUNT_PER_TIME 1
 #define BUILDING_TIME 60.0
 #define BUILDING_EXHAUSTION 5
 #define FORAGING_TIME 15.0
@@ -50,6 +50,8 @@ Person::Person(int x, int y) : x(x), y(y) {
 	hunger = START_HUNGER;
 	stamina = START_STAMINA;
 	max_stamina = START_STAMINA;
+
+	inventory->add(ItemStack::create(WATERMELON_SEED, 1));
 }
 Person::~Person() {
 	delete inventory;
@@ -203,7 +205,9 @@ float Person::hungerBar() {
 float Person::staminaBar() {
 	return stamina / START_STAMINA;
 }
-void Person::sleep() {
+void Person::sleep(World* world) {
+	Building* building = world->getTile(getX(), getY())->getBuilding();
+	if (!building || !building->canSleep()) return;
 	wait("....-Sleeping\0", SLEEP_TIME);
 	rest();
 }
@@ -241,6 +245,7 @@ void Person::plant(World* world) {
 	Farm* farm = static_cast<Farm*>(t->getBuilding());
 	int selectionIndex = inventory->getSelectionIndex();
 	ItemStack* item = inventory->get(selectionIndex);
+	if (!item) return;
 	Crop* crop = Crop::getCrop(item);
 	if (crop == nullptr) return;
 	if (!farm->plant(crop)) return;

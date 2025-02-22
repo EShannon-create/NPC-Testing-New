@@ -13,3 +13,7 @@ int House::getTextureIndex() {
 char House::getID() {
 	return 'H';
 }
+bool House::canSleep() { return true; }
+float House::buildingEffort() {
+	return 20.0f;
+}

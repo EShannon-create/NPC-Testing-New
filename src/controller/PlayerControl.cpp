@@ -32,10 +32,12 @@ ChoiceMenu* getOpenChoiceMenu() {
 void InitializeChoiceMenus() {
 	openChoiceMenu = nullptr;
 
-	int buildingCount = 2;
+	int buildingCount = 4;
 	std::string* buildingNames = new std::string [buildingCount];
-	buildingNames[0] = "-House";
-	buildingNames[1] = "-Farm";
+	buildingNames[0] = "-Shack";
+	buildingNames[1] = "-House";
+	buildingNames[2] = "-Farm";
+	buildingNames[3] = "-Mine";
 	buildings = new ChoiceMenu(
 		buildingCount,
 		buildingNames,
@@ -66,7 +68,14 @@ void HandleInputs(World* world, Person* player) {
 	if(keydown) player->move(x, y, running, world);
 
 	if (IsKeyPressed(HARVEST_WILD_GROWTH))  player->tileInteract(world);
-	if (IsKeyPressed(CONSTRUCT_BUILDING)) openChoiceMenu = buildings;
+	if (IsKeyPressed(CONSTRUCT_BUILDING)) {
+		Building* b = world->getTile(player->getX(), player->getY())->getBuilding();
+		if (b) {
+			if (b->isComplete()) return;
+			build(player, world, b->getID());
+		}
+		else openChoiceMenu = buildings;
+	}
 	if (IsKeyPressed(SELECTION_UP)) {
 		if (openChoiceMenu) openChoiceMenu->previous();
 		else player->getInventory()->up();
@@ -76,7 +85,7 @@ void HandleInputs(World* world, Person* player) {
 		else player->getInventory()->down();
 	}
 	if (IsKeyPressed(ORGANIZE_INVENTORY)) player->organizeInventory();
-	if (IsKeyPressed(SLEEP)) player->sleep();
+	if (IsKeyPressed(SLEEP)) player->sleep(world);
 	if (IsKeyPressed(SELECT)) {
 		if (openChoiceMenu) {
 			openChoiceMenu->doChoice(player, world);
@@ -88,5 +97,5 @@ void HandleInputs(World* world, Person* player) {
 
 }
 bool build(Person* p, World* w, char c) {
-	p->build(w, c);
+	return p->build(w, c);
 }

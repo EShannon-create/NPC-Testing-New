@@ -11,6 +11,9 @@ public:
 	bool isComplete();
 	virtual int getTextureIndex();
 	virtual char getID();
+	virtual bool canSleep();
+protected:
+	virtual float buildingEffort();
 private:
 	float completion;
 };

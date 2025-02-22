@@ -4,6 +4,7 @@
 #include "buildings/Building.h"
 #include "buildings/Farm.h"
 #include "buildings/House.h"
+#include "buildings/Shack.h"
 #include "items/containers/ItemContainer.h"
 #include "items/ItemStack.h"
 #include <random>

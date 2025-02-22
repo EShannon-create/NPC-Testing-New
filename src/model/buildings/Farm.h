@@ -16,6 +16,8 @@ public:
 	char getID();
 	bool harvest(ItemContainer*);
 	bool plant(Crop*);
+protected:
+	float buildingEffort();
 private:
 	Crop* crop;
 };
