@@ -5,6 +5,7 @@
 #include "buildings/Farm.h"
 #include "buildings/House.h"
 #include "buildings/Shack.h"
+#include "buildings/Mine.h"
 #include "items/containers/ItemContainer.h"
 #include "items/ItemStack.h"
 #include <random>
@@ -24,7 +25,7 @@ public:
 	int growthGrade();
 	char* getInfo();
 
-	bool build(char, float);
+	bool build(World*, int, int, char, float);
 	void destroy();
 	int getBuildingTextureIndex();
 	bool harvest(ItemContainer*);
@@ -32,6 +33,7 @@ public:
 	Building* getBuilding();
 
 	float getMineralValue(int);
+	float mine(int,float);
 
 	static void InitRandom(int);
 private:

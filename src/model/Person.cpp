@@ -107,7 +107,7 @@ void Person::tileInteract(World* world) {
 			tile->clearWildGrowth();
 			wait(".... Weeding\0", FORAGING_TIME);
 		}
-
+		break;
 	case 'M':
 		// to do
 		break;
@@ -127,7 +127,7 @@ int getWorldWidth() {
 bool Person::build(World* world, char buildingID) {
 	if (acting() || !exhaust(BUILDING_EXHAUSTION)) return false;
 	wait(".... Building\0",BUILDING_TIME);
-	return getOn(world)->build(buildingID, BUILDING_AMOUNT_PER_TIME);
+	return getOn(world)->build(world, getX(), getY(), buildingID, BUILDING_AMOUNT_PER_TIME);
 }
 bool Person::acting() {
 	return actionTimer > 0.0f;

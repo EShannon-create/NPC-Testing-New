@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include "World.h"
 #include <string>
 #include <math.h>
 //#include <stdio.h>
@@ -117,7 +118,7 @@ void Tile::destroy() {
 	delete building;
 	building = nullptr;
 }
-bool Tile::build(char ID, float amount) {
+bool Tile::build(World* world, int x, int y, char ID, float amount) {
 	if (building != nullptr && building->getID() != ID) return false;
 	if (building != nullptr && building->isComplete()) return false;
 	if (building == nullptr) switch (ID) {
@@ -129,6 +130,9 @@ bool Tile::build(char ID, float amount) {
 		break;
 	case 'S':
 		building = new Shack();
+		break;
+	case 'M':
+		building = new Mine(world, x, y);
 		break;
 	}
 	
@@ -172,6 +176,11 @@ void Tile::InitRandom(int seed) {
 }
 float Tile::getMineralValue(int mineral) {
 	return minerals[mineral];
+}
+float Tile::mine(int mineral, float amount) {
+	float toReturn = minerals[mineral] * amount;
+	minerals[mineral] -= toReturn;
+	return toReturn;
 }
 Building* Tile::getBuilding() {
 	return building;
