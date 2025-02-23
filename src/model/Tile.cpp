@@ -1,5 +1,5 @@
 #include "Tile.h"
-#include "World.h"
+#include "buildings/Mine.h"
 #include <string>
 #include <math.h>
 //#include <stdio.h>
@@ -118,7 +118,7 @@ void Tile::destroy() {
 	delete building;
 	building = nullptr;
 }
-bool Tile::build(World* world, int x, int y, char ID, float amount) {
+bool Tile::build(Tile*** tiles, char ID, float amount) {
 	if (building != nullptr && building->getID() != ID) return false;
 	if (building != nullptr && building->isComplete()) return false;
 	if (building == nullptr) switch (ID) {
@@ -132,11 +132,13 @@ bool Tile::build(World* world, int x, int y, char ID, float amount) {
 		building = new Shack();
 		break;
 	case 'M':
-		building = new Mine(world, x, y);
+		if (!tiles) return false;
+		building = new Mine(tiles);
 		break;
 	}
 	
 	building->construct(amount);
+	return true;
 }
 int Tile::getBuildingTextureIndex() {
 	if (building == nullptr) return -1;

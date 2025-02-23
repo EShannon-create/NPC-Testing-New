@@ -5,7 +5,6 @@
 #include "buildings/Farm.h"
 #include "buildings/House.h"
 #include "buildings/Shack.h"
-#include "buildings/Mine.h"
 #include "items/containers/ItemContainer.h"
 #include "items/ItemStack.h"
 #include <random>
@@ -25,7 +24,7 @@ public:
 	int growthGrade();
 	char* getInfo();
 
-	bool build(World*, int, int, char, float);
+	bool build(Tile***, char, float);
 	void destroy();
 	int getBuildingTextureIndex();
 	bool harvest(ItemContainer*);

@@ -8,7 +8,7 @@
 
 void InitializeTextures();
 void UninitializeTextures();
-void DrawTiles(int,int,int,int,World*);
+void DrawTiles(int,int,int,int,World*,int);
 void DrawEntities(int, int, int, int, Person**, int);
 
 #endif

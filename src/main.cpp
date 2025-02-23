@@ -33,6 +33,7 @@ double runtime = 0.0;
 float runtimeSpeed = 1.0;
 float skip = 0.0;
 Texture sleeping;
+int frame = 0;
 //
 
 //DATA
@@ -142,8 +143,7 @@ void ChangeSpeed(bool increase) {
 void NormalDraw() {
 	HandleInputs(world, player);
 
-	if (IsKeyPressed(KEY_R)) resetTiles();//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
-	if (IsKeyPressed(KEY_BACKSLASH)) drawFPS = !drawFPS;
+	//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
 	if (IsKeyPressed(KEY_P)) SaveMapImage();
 	if (IsKeyPressed(KEY_G)) printf("(%d,%d)\n", player->getX(), player->getY());
 	if (IsKeyPressed(KEY_F11)) {
@@ -156,7 +156,7 @@ void NormalDraw() {
 	if(IsKeyPressed(KEY_EQUAL)) runtimeSpeed = 1;
 
 	// draw our textures to the screen
-	DrawTiles(screenHeight, screenWidth, -player->getX(), -player->getY(), world);
+	DrawTiles(screenHeight, screenWidth, -player->getX(), -player->getY(), world, frame);
 	DrawEntities(screenHeight, screenWidth, -player->getX(), -player->getY(), people, peopleArraySize);
 	DrawGUI(player,getOpenChoiceMenu());
 	DrawClock();
@@ -204,6 +204,7 @@ void GameLoop() {
 		people[i]->update(delta_t);
 		if (people[i]->healthBar() < 0) Kill(i);
 	}
+	frame++;
 }
 void DrawClock() {
 	char* timetxt = world->getTime();

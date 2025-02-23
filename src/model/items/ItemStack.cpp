@@ -53,6 +53,11 @@ const char* ItemStack::getItemName(ItemID id) {
 	case STICK: return " .. Stick\0";
 	case WATERMELON_SEED: return " .. Watermelon Seed\0";
 	case WATERMELON_SLICE: return " .. Watermelon Slice\0";
+	case COAL: return " .. Coal\0";
+	case IRON_ORE: return " .. Iron Ore\0";
+	case GOLD_ORE: return " .. Gold Ore\0";
+	case TIN_ORE: return " .. Tin Ore\0";
+	case COPPER_ORE: return " .. Copper Ore\0";
 	default: return " .. NONE\0";
 	}
 }

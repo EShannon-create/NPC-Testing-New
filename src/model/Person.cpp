@@ -1,6 +1,7 @@
 #include "Person.h"
 #include "World.h"
 #include "buildings/Farm.h"
+#include "buildings/Mine.h"
 #include <stdio.h>
 
 int worldWidth = 0;
@@ -19,6 +20,7 @@ int worldHeight = 0;
                           //At that scale, 0.75 seconds to walk a tile
 #define SLEEP_TIME 480.0
 #define EAT_TIME 1.5
+#define MINING_TIME 90.0
 
 #define WALKING_EXHAUSTION 0.01
 #define RUNNING_TIME WALKING_TIME/8.5 //Usain bolt runs 8.5 times faster than the average walking speed
@@ -38,6 +40,8 @@ int worldHeight = 0;
 #define STAMINA_RECOVERY_CALORIES 3.0 //Calories burned to recover stamina
 
 #define STARVATION_DAMAGE START_HEALTH/MAX_HUNGER //Damage done per calorie below 0 per tick
+
+#define MINE_AREA 5
 
 Person::Person() : Person(0,0) {
 }
@@ -109,7 +113,8 @@ void Person::tileInteract(World* world) {
 		}
 		break;
 	case 'M':
-		// to do
+		Mine* mine = static_cast<Mine*>(building);
+		if (mine->mine(inventory)) wait(".... Mining\0", MINING_TIME);
 		break;
 	}
 
@@ -127,7 +132,17 @@ int getWorldWidth() {
 bool Person::build(World* world, char buildingID) {
 	if (acting() || !exhaust(BUILDING_EXHAUSTION)) return false;
 	wait(".... Building\0",BUILDING_TIME);
-	return getOn(world)->build(world, getX(), getY(), buildingID, BUILDING_AMOUNT_PER_TIME);
+	Tile*** tiles = nullptr;
+	if (buildingID == 'M') { //this is jank
+		tiles = new Tile * *[MINE_AREA];
+		for (int i = 0; i < MINE_AREA; i++) {
+			tiles[i] = new Tile * [MINE_AREA];
+			for (int j = 0; j < MINE_AREA; j++) {
+				tiles[i][j] = world->getTile(x + i - MINE_AREA / 2, y + j - MINE_AREA / 2);
+			}
+		}
+	}
+	return getOn(world)->build(tiles, buildingID, BUILDING_AMOUNT_PER_TIME);
 }
 bool Person::acting() {
 	return actionTimer > 0.0f;

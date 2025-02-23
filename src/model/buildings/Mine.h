@@ -1,14 +1,19 @@
-#pragma once
+#ifndef MINE_H
+#define MINE_H
 
-#include "model/World.h"
+#include "Building.h"
+#include "model/Tile.h"
+#include "model/items/containers/ItemContainer.h"
 
 class Mine : public Building {
 public:
-	Mine(World*, int, int);
+	Mine(Tile***);
 	~Mine();
-	void mine(ItemContainer*);
+	bool mine(ItemContainer*);
 	int getTextureIndex();
 	char getID();
 private:
 	Tile*** tiles;
 };
+
+#endif

@@ -10,12 +10,15 @@
 #define DAY Color{255,255,255,255}
 #define TWILIGHT_ANGLE 15
 
+#define MINERAL_INDICATOR_MODULUS 5
+#define MINERAL_INDICATOR_DISPLAY_LENGTH 20
+#define MINERAL_INDICATOR_DELAY 60
+
 Texture2D* land;
 Texture2D* growth;
 Texture2D* buildingTextures;
 Texture water;
 Texture chuddie;
-Texture hourglass;
 
 int modw(int);
 int modh(int);
@@ -40,7 +43,6 @@ void InitializeTextures() {
 
 	water = LoadTexture("water.png");
 	chuddie = LoadTexture("chuddie.png");
-	hourglass = LoadTexture("hourglass.png");
 
 	buildingTextures = new Texture2D[BUILDING_TEXTURES];
 	buildingTextures[0] = LoadTexture("construction.png");
@@ -55,9 +57,9 @@ void UninitializeTextures() {
 	for (int i = 0; i < FERTILITY_GRADES; i++) UnloadTexture(land[i]);
 	for (int i = 0; i < FERTILITY_GRADES-1; i++) UnloadTexture(growth[i]);
 	for (int i = 0; i < BUILDING_TEXTURES; i++) UnloadTexture(buildingTextures[i]);
+	for (int i = 0; i < MINERAL_TYPES; i++) UnloadTexture(indicatorTextures[i]);
 	UnloadTexture(water);
 	UnloadTexture(chuddie);
-	UnloadTexture(hourglass);
 	delete[] land;
 	delete[] growth;
 	delete[] buildingTextures;
@@ -127,7 +129,7 @@ Color getTint(float sunAngle) {
 	return RED;
 }
 
-void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, World* world) {
+void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, World* world, int frame) {
 	int tileHeight = getTileHeight(screenHeight);
 	int tileWidth = getTileWidth(screenWidth);
 
@@ -148,6 +150,8 @@ void DrawTiles(int screenHeight, int screenWidth, int offsetX, int offsetY, Worl
 			else {
 				int grade = tile->fertilityGrade();
 				DrawTexture(land[grade], x, y, tint);
+
+
 				int growthGrade = tile->growthGrade();
 				//printf("Wild Growth: %f, Grade: %d\n",tile->getWildGrowth(),growthGrade);
 				if (growthGrade > 0) DrawTexture(growth[growthGrade - 1], x, y, tint);
