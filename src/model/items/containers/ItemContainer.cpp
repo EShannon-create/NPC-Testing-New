@@ -58,3 +58,24 @@ void ItemContainer::collapse() {//Probably needs testing
 int ItemContainer::getSize() {
 	return size;
 }
+bool ItemContainer::take(ItemID id, int q) {
+	int hasTaken = 0;
+	for (int i = 0; i < size; i++) {
+		if (id != items[i]->getID()) continue;
+
+		if (items[i]->getQuantity() > q - hasTaken) {
+			items[i]->decrease(q - hasTaken);
+			return true;
+		}
+		else {
+			int qua = items[i]->getQuantity();
+
+			delete items[i];
+			items[i] = nullptr;
+
+			if (qua == q - hasTaken) return true;
+			else hasTaken += qua;
+		}
+	}
+	return false;
+}

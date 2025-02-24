@@ -14,6 +14,7 @@ public:
 	static bool move(ItemContainer*, int, ItemContainer*);
 	void collapse();
 	int getSize();
+	bool take(ItemID, int);
 private:
 	ItemStack** items;
 	const int size;

@@ -1,4 +1,5 @@
 #include "PlayerControl.h"
+#include "model/buildings/Crafter.h"
 #include <stdio.h>
 
 bool keydown = false;
@@ -10,7 +11,7 @@ bool keydown = false;
 #define WALK_RIGHT KEY_D
 #define RUN KEY_LEFT_SHIFT
 
-#define HARVEST_WILD_GROWTH KEY_E
+#define INTERACT KEY_E
 #define STUDY_TILE KEY_Q
 #define CONSTRUCT_BUILDING KEY_B
 #define ORGANIZE_INVENTORY KEY_I
@@ -32,16 +33,19 @@ ChoiceMenu* getOpenChoiceMenu() {
 void InitializeChoiceMenus() {
 	openChoiceMenu = nullptr;
 
-	int buildingCount = 4;
+	int buildingCount = 5;
 	std::string* buildingNames = new std::string [buildingCount];
-	buildingNames[0] = "-Shack";
-	buildingNames[1] = "-House";
-	buildingNames[2] = "-Farm";
-	buildingNames[3] = "-Mine";
+	char* buildingControls = new char[buildingCount];
+	buildingNames[0] = "-Shack"; buildingControls[0] = 'S';
+	buildingNames[1] = "-House"; buildingControls[1] = 'H';
+	buildingNames[2] = "-Farm"; buildingControls[2] = 'F';
+	buildingNames[3] = "-Mine"; buildingControls[3] = 'M';
+	buildingNames[4] = "-Smeltry"; buildingControls[4] = 'O';
 	buildings = new ChoiceMenu(
 		buildingCount,
 		buildingNames,
-		build
+		build,
+		buildingControls
 	);
 }
 void DestroyChoiceMenus() {
@@ -67,7 +71,13 @@ void HandleInputs(World* world, Person* player) {
 	keydown = IsKeyDown(WALK_UP) || IsKeyDown(WALK_DOWN) || IsKeyDown(WALK_LEFT) || IsKeyDown(WALK_RIGHT);
 	if(keydown) player->move(x, y, running, world);
 
-	if (IsKeyPressed(HARVEST_WILD_GROWTH))  player->tileInteract(world);
+	if (IsKeyPressed(INTERACT)) {
+		Tile* tile = player->getOn(world);
+		Building* building = tile->getBuilding();
+
+		if(building && building->getID() == 'O') openChoiceMenu = static_cast<Crafter*>(building)->choiceMenu();
+		else player->tileInteract(world);
+	}
 	if (IsKeyPressed(CONSTRUCT_BUILDING)) {
 		Building* b = world->getTile(player->getX(), player->getY())->getBuilding();
 		if (b) {

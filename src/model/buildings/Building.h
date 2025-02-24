@@ -9,11 +9,11 @@ public:
 	~Building();
 	void construct(float);
 	bool isComplete();
-	virtual int getTextureIndex();
-	virtual char getID();
+	virtual int getTextureIndex() = 0;
+	virtual char getID() = 0;
 	virtual bool canSleep();
 protected:
-	virtual float buildingEffort();
+	virtual float buildingEffort() = 0;
 private:
 	float completion;
 };

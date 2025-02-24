@@ -7,7 +7,7 @@
 
 class ChoiceMenu {
 public:
-	ChoiceMenu(int choices, std::string* names, std::function<bool(Person*, World*, char)> func);
+	ChoiceMenu(int choices, std::string* names, std::function<bool(Person*, World*, char)> func, char* control);
 	~ChoiceMenu();
 	void next();
 	void previous();
@@ -20,4 +20,5 @@ private:
 	std::string* names;
 	std::function<bool(Person*, World*, char)> func;
 	int index;
+	char* controls;
 };

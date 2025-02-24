@@ -38,6 +38,8 @@ public:
 
 	void sleep(World*);
 	bool isSleeping();
+
+	Tile* getOn(World*);
 private:
 	int x;
 	int y;
@@ -53,8 +55,6 @@ private:
 	float actionTimer;
 	void wait(char*,float);
 	char* waitText;
-
-	Tile* getOn(World*);
 
 	Inventory* inventory;
 };

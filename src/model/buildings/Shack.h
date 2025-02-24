@@ -6,9 +6,9 @@ class Shack : public Building {
 public:
 	Shack();
 	~Shack();
-	int getTextureIndex();
-	char getID();
-	bool canSleep();
+	int getTextureIndex() override;
+	char getID() override;
+	bool canSleep() override;
 protected:
-	float buildingEffort();
+	float buildingEffort() override;
 };

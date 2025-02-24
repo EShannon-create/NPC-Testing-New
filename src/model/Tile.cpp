@@ -1,5 +1,6 @@
 #include "Tile.h"
 #include "buildings/Mine.h"
+#include "buildings/Smeltry.h"
 #include <string>
 #include <math.h>
 //#include <stdio.h>
@@ -135,6 +136,8 @@ bool Tile::build(Tile*** tiles, char ID, float amount) {
 		if (!tiles) return false;
 		building = new Mine(tiles);
 		break;
+	case 'O':
+		building = new Smeltry();
 	}
 	
 	building->construct(amount);

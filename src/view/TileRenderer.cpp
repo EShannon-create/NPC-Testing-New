@@ -3,7 +3,7 @@
 
 #define TILE_SIZE 32
 #define FERTILITY_GRADES 4
-#define BUILDING_TEXTURES 7
+#define BUILDING_TEXTURES 8
 
 #define GOLDEN_HOUR Color{200,140,40,255}
 #define NIGHT Color{90,112,150,255}
@@ -52,12 +52,12 @@ void InitializeTextures() {
 	buildingTextures[4] = LoadTexture("mineshaft.png");
 	buildingTextures[5] = LoadTexture("growing farm.png");
 	buildingTextures[6] = LoadTexture("ready farm.png");
+	buildingTextures[7] = LoadTexture("smeltry.png");
 }
 void UninitializeTextures() {
 	for (int i = 0; i < FERTILITY_GRADES; i++) UnloadTexture(land[i]);
 	for (int i = 0; i < FERTILITY_GRADES-1; i++) UnloadTexture(growth[i]);
 	for (int i = 0; i < BUILDING_TEXTURES; i++) UnloadTexture(buildingTextures[i]);
-	for (int i = 0; i < MINERAL_TYPES; i++) UnloadTexture(indicatorTextures[i]);
 	UnloadTexture(water);
 	UnloadTexture(chuddie);
 	delete[] land;

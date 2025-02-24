@@ -7,10 +7,11 @@ class House : public Building {
 public:
 	House();
 	~House();
-	int getTextureIndex();
-	char getID();
+	int getTextureIndex() override;
+	char getID() override;
 	bool canSleep();
-	float buildingEffort();
+protected:
+	float buildingEffort() override;
 private:
 
 };

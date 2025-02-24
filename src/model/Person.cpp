@@ -2,6 +2,7 @@
 #include "World.h"
 #include "buildings/Farm.h"
 #include "buildings/Mine.h"
+#include "buildings/Crafter.h"
 #include <stdio.h>
 
 int worldWidth = 0;

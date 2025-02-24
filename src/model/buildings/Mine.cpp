@@ -44,3 +44,6 @@ int Mine::getTextureIndex() {
 char Mine::getID() {
 	return 'M';
 }
+float Mine::buildingEffort() {
+	return 1.f;
+}

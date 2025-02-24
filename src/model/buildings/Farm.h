@@ -12,12 +12,12 @@ public:
 	~Farm();
 	float getCropGrowth();
 	void grow(float,float);
-	int getTextureIndex();
-	char getID();
+	int getTextureIndex() override;
+	char getID() override;
 	bool harvest(ItemContainer*);
 	bool plant(Crop*);
 protected:
-	float buildingEffort();
+	float buildingEffort() override;
 private:
 	Crop* crop;
 };

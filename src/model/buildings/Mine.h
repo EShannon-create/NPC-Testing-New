@@ -10,8 +10,10 @@ public:
 	Mine(Tile***);
 	~Mine();
 	bool mine(ItemContainer*);
-	int getTextureIndex();
-	char getID();
+	int getTextureIndex() override;
+	char getID() override;
+protected:
+	float buildingEffort() override;
 private:
 	Tile*** tiles;
 };

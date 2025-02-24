@@ -1,10 +1,11 @@
 #include "ChoiceMenu.h"
 
-ChoiceMenu::ChoiceMenu(int choices, std::string* names, std::function<bool(Person*, World*, char)> func) : choices(choices), names(names), func(func) {
+ChoiceMenu::ChoiceMenu(int choices, std::string* names, std::function<bool(Person*, World*, char)> func, char* controls) : choices(choices), names(names), func(func), controls(controls) {
 	index = 0;
 }
 ChoiceMenu::~ChoiceMenu() {
 	delete[] names;
+	delete[] controls;
 }
 void ChoiceMenu::next() {
 	index++;
@@ -26,5 +27,5 @@ int ChoiceMenu::getSelectedIndex() {
 	return index;
 }
 bool ChoiceMenu::doChoice(Person* person, World* world) {
-	return func(person, world, names[index][1]);
+	return func(person, world, controls[index]);
 }

@@ -12,9 +12,4 @@ void Building::construct(float amount) {
 bool Building::isComplete() {
 	return completion >= buildingEffort();
 }
-int Building::getTextureIndex() { return 0; }
-char Building::getID() {
-	return 'm';
-}
-float Building::buildingEffort() { return 1.0f; }
 bool Building::canSleep() { return false; }
