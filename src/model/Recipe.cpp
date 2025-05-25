@@ -7,6 +7,7 @@ Recipe::Recipe(int size, ItemID* items, int* quantities, ItemID yields, int quan
 Recipe::Recipe(ItemID item, int quantityA, ItemID yields, int quantityB, std::string name) :
 	Recipe(1, new ItemID(item), new int(quantityA), yields, quantityB, name)
 {
+	for (int i = 0; i < ingredients; i++) printf("%s %d\n", ItemStack::getItemName(items[i]), quantities[i]);
 }
 Recipe::~Recipe() {
 	delete items;
@@ -33,7 +34,8 @@ bool Recipe::canCraft(ItemContainer* from) {
 bool Recipe::itemOkay(ItemContainer* from, int index) {
 	int has = 0;
 	for (int i = 0; i < from->getSize(); i++) {
-		if (from->get(i)->getID() == items[index]) has += from->get(i)->getQuantity();
+		ItemStack* item = from->get(i);
+		if (item != nullptr && item->getID() == items[index]) has += from->get(i)->getQuantity();
 		if (has >= quantities[index]) return true;
 	}
 	return false;

@@ -43,7 +43,7 @@ bool Tile::isWater() {
 }
 float Tile::getWildGrowth() {
 	return wildGrowth;
-}
+}	
 void Tile::updateGrowth(Tile* north, Tile* south, Tile* east, Tile* west, float speedModifier) {//Speed modifier is passed in as count, so if more tiles are updated per tick it does not effect how fast a tile's wild growth regenerates
 	float cropGrowth = 0;
 	Farm* farm = nullptr;

@@ -77,6 +77,10 @@ void HandleInputs(World* world, Person* player) {
 
 		if(building && building->getID() == 'O') openChoiceMenu = static_cast<Crafter*>(building)->choiceMenu();
 		else player->tileInteract(world);
+		if (openChoiceMenu) {
+			printf("OpenChoiceMenu %d\n",openChoiceMenu->getChoices());
+			for (int i = 0; i < openChoiceMenu->getChoices(); i++) printf("%d. %s\n",i+1,openChoiceMenu->getChoiceName(i));
+		}
 	}
 	if (IsKeyPressed(CONSTRUCT_BUILDING)) {
 		Building* b = world->getTile(player->getX(), player->getY())->getBuilding();

@@ -6,8 +6,7 @@ class Smeltry : public Crafter {
 public:
 	Smeltry();
 	~Smeltry();
-	Recipe** recipes() override;
-	int recipeCount() override;
+	static Recipe** recipes();
 	int getTextureIndex() override;
 	char getID() override;
 protected:

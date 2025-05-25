@@ -6,12 +6,11 @@
 
 class Crafter : public Building{
 public:
-	Crafter();
+	Crafter(const int,Recipe**);
 	~Crafter();
-	virtual Recipe** recipes();
-	virtual int recipeCount();
 	ChoiceMenu* choiceMenu();
 private:
 	ChoiceMenu* menu;
 	bool craft(Person*, World*, char);
+	Recipe** recipes;
 };

@@ -1,16 +1,17 @@
 #include "Smeltry.h"
+#include <stdio.h>
 
-Smeltry::Smeltry() {
+Recipe** recipeslist = nullptr;
+int recipeTotal = 5;
+Smeltry::Smeltry() : Crafter::Crafter(recipeTotal,Smeltry::recipes()) {
 
 }
 Smeltry::~Smeltry() {
 
 }
 
-Recipe** recipeslist = nullptr;
-int recipeTotal = 5;
-
 Recipe** Smeltry::recipes() {
+	printf("Called recipes\n");
 	if (!recipeslist) {
 		recipeslist = new Recipe*[recipeTotal];
 
@@ -24,11 +25,11 @@ Recipe** Smeltry::recipes() {
 		recipeslist[2] = new Recipe(2, b, bq, BRONZE_INGOT, 1, "-Bronze Ingot");
 		recipeslist[3] = new Recipe(IRON_ORE, 5, IRON_INGOT, 1, "-Iron Ore > Ingot");
 		recipeslist[4] = new Recipe(GOLD_ORE, 5, GOLD_INGOT, 1, "-Gold Ore > Ingot");
+		for (int i = 0; i < recipeTotal; i++) {
+			printf("%d. %s\n", i + 1, recipeslist[i]->name);
+		}
 	}
 	return recipeslist;
-}
-int Smeltry::recipeCount() {
-	return recipeTotal;
 }
 int Smeltry::getTextureIndex() {
 	return 7;

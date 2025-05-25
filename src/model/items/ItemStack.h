@@ -23,10 +23,10 @@ public:
 	ItemStack* split(int);
 	bool decrease(int);
 	ItemID getID();
+	const static char* getItemName(ItemID);
 private:
 	int quantity;
 	ItemID id;
-	const static char* getItemName(ItemID);
 	static int getCalories(ItemID);
 	ItemStack(ItemID, int);
 };

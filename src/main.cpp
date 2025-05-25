@@ -1,15 +1,11 @@
-/*
-This is currently based off of a Raylib example file
-*/
-
 #include "raylib.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
 #include "view/TileRenderer.h"
 #include "view/GUIRenderer.h"
-#include "view/EntityRenderer.h"
 
 #include "controller/PlayerControl.h"
+#include "controller/ClickControl.h"
 
 #include "model/World.h"
 #include "model/Person.h"
@@ -142,6 +138,7 @@ void ChangeSpeed(bool increase) {
 }
 void NormalDraw() {
 	HandleInputs(world, player);
+	HandleClicks(world, player, screenWidth, screenHeight,TILE_SIZE);
 
 	//These are outside of the HandleInputs() function for debugging purposes... they should be removed from this program entirely eventually
 	if (IsKeyPressed(KEY_P)) SaveMapImage();
